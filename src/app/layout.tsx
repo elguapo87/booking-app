@@ -27,9 +27,8 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${outfit.variable} ${playfair.variable} font-sans antialiased`}>
         <ConditionalNavbar />
-        <div className="flex">
+        <div className="min-h-[70vh]">
           {children}
-
         </div>
       </body>
     </html>

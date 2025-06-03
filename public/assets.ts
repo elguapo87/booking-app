@@ -1,4 +1,5 @@
 import logo from './logo.svg'
+import easy_logo from "./easy-booking-logo.png"
 import searchIcon from './searchIcon.svg'
 import userIcon from './userIcon.svg'
 import calenderIcon from './calenderIcon.svg'
@@ -41,6 +42,7 @@ import totalRevenueIcon from "./totalRevenueIcon.svg";
 
 export const assets = {
     logo,
+    easy_logo,
     searchIcon,
     userIcon,
     calenderIcon,
