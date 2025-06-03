@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Outfit, Playfair_Display } from "next/font/google";
 import "./globals.css";
+import ConditionalNavbar from "@/components/ConditionalNavbar";
 
 const outfit = Outfit({
   variable: "--font-outfit",
@@ -24,10 +25,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={`${outfit.variable} ${playfair.variable} font-sans antialiased`}
-      >
-        {children}
+      <body className={`${outfit.variable} ${playfair.variable} font-sans antialiased`}>
+        <ConditionalNavbar />
+        <div className="flex">
+          {children}
+
+        </div>
       </body>
     </html>
   );
