@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Outfit, Playfair_Display } from "next/font/google";
 import "./globals.css";
 import ConditionalNavbar from "@/components/ConditionalNavbar";
+import { ClerkProvider } from "@clerk/nextjs";
 
 const outfit = Outfit({
   variable: "--font-outfit",
@@ -24,13 +25,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={`${outfit.variable} ${playfair.variable} font-sans antialiased`}>
-        <ConditionalNavbar />
-        <div className="min-h-[70vh]">
-          {children}
-        </div>
-      </body>
-    </html>
+    <ClerkProvider>
+      <html lang="en">
+        <body className={`${outfit.variable} ${playfair.variable} font-sans antialiased`}>
+          <ConditionalNavbar />
+          <div className="min-h-[70vh]">
+            {children}
+          </div>
+        </body>
+      </html>
+    </ClerkProvider>
   );
 }
