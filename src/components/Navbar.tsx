@@ -34,11 +34,18 @@ const Navbar = () => {
 
     useEffect(() => {
         const handleScroll = () => {
-            setIsScrolled(window.scrollY > 10);
+            if (pathName !== "/") {
+                setIsScrolled(true);
+
+            } else {
+                setIsScrolled(window.scrollY > 10);
+            }
         };
+
         window.addEventListener("scroll", handleScroll);
+        handleScroll();
         return () => window.removeEventListener("scroll", handleScroll);
-    }, []);
+    }, [pathName]);
 
     return (
 
@@ -74,7 +81,7 @@ const Navbar = () => {
                         </UserButton.MenuItems>
                     </UserButton>
                      :
-                    <button onClick={() => openSignIn()} className="bg-black text-white px-8 py-2.5 rounded-full ml-4 transition-all duration-500">
+                    <button onClick={() => openSignIn()} className="bg-black text-white px-8 py-2.5 rounded-full ml-4 transition-all duration-500 cursor-pointer">
                         Login
                     </button>
                 }
@@ -118,7 +125,7 @@ const Navbar = () => {
                 {
                     !user
                       &&
-                    <button onClick={() => openSignIn()} className="bg-black text-white px-8 py-2.5 rounded-full transition-all duration-500">
+                    <button onClick={() => openSignIn()} className="bg-black text-white px-8 py-2.5 rounded-full transition-all duration-500 cursor-pointer">
                         Login
                     </button>
                 }
