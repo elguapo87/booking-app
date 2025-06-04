@@ -1,6 +1,7 @@
 import ExclusiveOffers from "@/components/ExclusiveOffers";
 import FeaturedDestination from "@/components/FeaturedDestination";
 import Hero from "@/components/Hero";
+import Testimonial from "@/components/Testimonial";
 
 export default function Home() {
   return (
@@ -8,6 +9,7 @@ export default function Home() {
       <Hero />
       <FeaturedDestination />
       <ExclusiveOffers />
+      <Testimonial />
     </>
   );
 }
