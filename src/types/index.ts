@@ -42,3 +42,12 @@ export type HotelCardProps = {
     room: RoomType;
     index: number;
 };
+
+
+// Title component types
+export type TitleProps = {
+    title: string;
+    subTitle: string;
+    align?: string;
+    font?: string;
+};
