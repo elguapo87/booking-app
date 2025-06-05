@@ -51,3 +51,19 @@ export type TitleProps = {
     align?: string;
     font?: string;
 };
+
+
+
+// Checkbox props types
+export type CheckBoxProps = {
+    label: string;
+    selected?: boolean;
+    onChange?: (checked: boolean, label: string) => void; 
+} 
+
+// Radio button props types
+export type RadioBtnProps = {
+    label: string;
+    selected?: boolean;
+    onChange?: (label: string) => void;
+};
