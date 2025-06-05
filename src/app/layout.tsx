@@ -3,6 +3,7 @@ import { Outfit, Playfair_Display } from "next/font/google";
 import "./globals.css";
 import ConditionalNavbar from "@/components/ConditionalNavbar";
 import { ClerkProvider } from "@clerk/nextjs";
+import Footer from "@/components/Footer";
 
 const outfit = Outfit({
   variable: "--font-outfit",
@@ -32,6 +33,8 @@ export default function RootLayout({
           <div className="min-h-[70vh]">
             {children}
           </div>
+
+          <Footer />
         </body>
       </html>
     </ClerkProvider>
