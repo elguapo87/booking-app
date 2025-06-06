@@ -4,6 +4,7 @@ import "./globals.css";
 import ConditionalNavbar from "@/components/ConditionalNavbar";
 import { ClerkProvider } from "@clerk/nextjs";
 import Footer from "@/components/Footer";
+import HotelReg from "@/components/HotelReg";
 
 const outfit = Outfit({
   variable: "--font-outfit",
@@ -30,6 +31,8 @@ export default function RootLayout({
       <html lang="en">
         <body className={`${outfit.variable} ${playfair.variable} font-sans antialiased`}>
           <ConditionalNavbar />
+          {true && <HotelReg />}
+
           <div className="min-h-[70vh]">
             {children}
           </div>

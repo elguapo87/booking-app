@@ -28,6 +28,7 @@ import roomImg1 from './roomImg1.png'
 import roomImg2 from './roomImg2.png'
 import roomImg3 from './roomImg3.png'
 import roomImg4 from './roomImg4.png'
+import registerImage from "./registerImage.jpg"
 import regImage from './regImage.png'
 import kopaonik_hotel from "./kopaonik_hotel.jpg";
 import zlatibor from "./zlatibor.jpg";
@@ -67,6 +68,7 @@ export const assets = {
     menuIcon,
     closeMenu,
     guestsIcon,
+    registerImage,
     regImage,
     addIcon,
     dashboardIcon,
