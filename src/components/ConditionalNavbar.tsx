@@ -6,7 +6,7 @@ import Navbar from "./Navbar";
 const ConditionalNavbar = () => {
 
     const pathName = usePathname();
-    const isOwnerPath = pathName.includes("owner");
+    const isOwnerPath = pathName.includes("hotelOwner");
 
     return (
         <div>
