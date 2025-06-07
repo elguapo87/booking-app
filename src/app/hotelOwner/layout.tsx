@@ -4,7 +4,7 @@ import Sidebar from "@/components/hotelOwner/Sidebar";
 export default function HotelOwnerLayout ({ children }: { children: React.ReactNode }) {
     return (
         <>
-            <div className="flex flex-col h-screen">
+            <div className="flex flex-col h-screen max-md:mb-50">
                 <Navbar />
                 <div className="flex h-full">
                     <Sidebar />
