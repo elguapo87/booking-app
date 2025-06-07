@@ -9,7 +9,7 @@ export default function HotelOwnerLayout ({ children }: { children: React.ReactN
                 <div className="flex h-full">
                     <Sidebar />
 
-                    <div className="flex-1 p-4 pt-10 md:px-10 h-full">
+                    <div className="flex-1 p-4 pt-5 md:pt-10 md:px-10 h-full">
                         {children}
                     </div>
                 </div>
