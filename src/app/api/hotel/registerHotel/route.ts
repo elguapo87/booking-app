@@ -5,12 +5,12 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
     try {
+        const { name, address, contact, city } = await req.json();
+
         const { authorized, user } = await protectUser();
         if (!authorized || !user) {
             return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
         }
-
-        const { name, address, contact, city } = await req.json();
 
         const owner = user._id;
 
@@ -24,7 +24,8 @@ export async function POST(req: NextRequest) {
             name,
             address,
             contact,
-            city
+            city,
+            owner
         });
 
         await userModel.findByIdAndUpdate(owner, { role: "hotelOwner" });
