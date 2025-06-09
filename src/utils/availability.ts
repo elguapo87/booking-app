@@ -8,9 +8,9 @@ type CheckAvailabilityParams = {
 
 export const availability = async ({ checkInDate, checkOutDate, room }: CheckAvailabilityParams) => {
     const bookings = await bookingModel.find({
-        room,
         checkInDate: { $lte: checkOutDate },
-        checkOutDate: { $gte: checkInDate }
+        checkOutDate: { $gte: checkInDate },
+        room
     });
 
     return bookings.length === 0;
