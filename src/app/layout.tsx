@@ -7,6 +7,7 @@ import Footer from "@/components/Footer";
 import HotelReg from "@/components/HotelReg";
 import AppContextProvider from "@/context/AppContext";
 import { Toaster } from "react-hot-toast";
+import HotelRegWrapper from "@/components/HotelRegWrapper";
 
 const outfit = Outfit({
   variable: "--font-outfit",
@@ -35,7 +36,8 @@ export default function RootLayout({
           <body className={`${outfit.variable} ${playfair.variable} font-sans antialiased`}>
             <Toaster />
             <ConditionalNavbar />
-            {false && <HotelReg />}
+            
+            <HotelRegWrapper />
 
             <div className="min-h-[70vh]">
               {children}
