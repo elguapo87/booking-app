@@ -46,7 +46,7 @@ export async function POST(req: NextRequest) {
             images: imageUrls
         });
 
-        return NextResponse.json({ success: true, message: "Room created" })
+        return NextResponse.json({ success: true, message: "Room added" })
 
     } catch (error) {
         const message = error instanceof Error ? error.message : "Unknown error";
