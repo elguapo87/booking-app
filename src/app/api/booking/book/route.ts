@@ -3,6 +3,7 @@ import bookingModel from "@/models/bookingModel";
 import roomModel from "@/models/roomModel";
 import { availability } from "@/utils/availability";
 import { NextRequest, NextResponse } from "next/server";
+import "@/models/hotelModel";
 
 export async function POST(req: NextRequest) {
     const { room, checkInDate, checkOutDate, guests } = await req.json();
