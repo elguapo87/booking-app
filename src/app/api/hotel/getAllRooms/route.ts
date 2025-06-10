@@ -1,6 +1,8 @@
 import connectDB from "@/config/db";
 import roomModel from "@/models/roomModel";
 import { NextResponse } from "next/server";
+import "@/models/hotelModel";
+import "@/models/userModel";
 
 export async function GET() {
     try {

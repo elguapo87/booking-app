@@ -11,7 +11,7 @@ export async function GET() {
             return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
         }
 
-        const bookings = await bookingModel.find({ user: user._id }).populate("room hotel");
+        const bookings = await bookingModel.find({ user: user._id }).populate("room hotel").sort({ createdAt: -1 });
 
         return NextResponse.json({ success: true, bookings });
 
