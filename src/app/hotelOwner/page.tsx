@@ -1,13 +1,47 @@
 "use client"
 
-import React, { useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { assets, dashboardDummyData } from '../../../public/assets';
 import Title from '@/components/Title';
 import Image from 'next/image';
+import { AppContext } from '@/context/AppContext';
+import toast from 'react-hot-toast';
+import { BookingData } from '@/types';
 
 const DashboardPage = () => {
 
-  const [dashboardData, setDashboardData] = useState(dashboardDummyData);
+  const context = useContext(AppContext);
+  if (!context) throw new Error("DashboardPage must be within AppContextProvider");
+  const { axios, getToken, user, currency } = context;
+
+  const [dashboardData, setDashboardData] = useState<BookingData | null>(null);
+  
+  const fetchDashboardData = async () => {
+    try {
+      const token = await getToken();
+
+      const { data } = await axios.get("/api/booking/getOwnerBookings", {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+
+      if (data.success) {
+        setDashboardData(data.dashboardData);
+
+      } else {
+        toast.error(data.message);
+      }
+
+    } catch (error) {
+        const errMessage = error instanceof Error ? error.message : "An unknown error occurred";
+        toast.error(errMessage);
+    }
+  };
+
+  useEffect(() => {
+    if (user) {
+      fetchDashboardData();
+    }
+  }, [user]);
 
   return (
     <div>
@@ -25,7 +59,7 @@ const DashboardPage = () => {
           <Image src={assets.totalBookingIcon} alt='' className='max-sm:hidden h-10' />
           <div className='flex flex-col sm:ml-4 font-medium'>
             <p className='text-blue-500 text-lg'>Total Bookings</p>
-            <p className='text-neutral-400 text-base'>{dashboardData.totalBookings}</p>
+            <p className='text-neutral-400 text-base'>{dashboardData?.totalBookings}</p>
           </div>
         </div>
 
@@ -34,7 +68,7 @@ const DashboardPage = () => {
           <Image src={assets.totalRevenueIcon} alt='' className='max-sm:hidden h-10' />
           <div className='flex flex-col sm:ml-4 font-medium'>
             <p className='text-blue-500 text-lg'>Total Revenue</p>
-            <p className='text-neutral-400 text-base'>$ {dashboardData.totalRevenue}</p>
+            <p className='text-neutral-400 text-base'>{currency} {dashboardData?.totalRevenue}</p>
           </div>
         </div>
       </div>
@@ -54,11 +88,11 @@ const DashboardPage = () => {
           </thead>
 
           <tbody className='text-sm'>
-            {dashboardData.bookings.map((item, index) => (
+            {dashboardData?.bookings?.map((item, index) => (
               <tr key={index}>
                 <td className='py-3 px-4 text-gray-700 border-t border-gray-300'>{item.user.username}</td>
                 <td className='py-3 px-4 text-gray-700 border-t border-gray-300 max-sm:hidden'>{item.room.roomType}</td>
-                <td className='py-3 px-4 text-gray-700 border-t border-gray-300 text-center'>$ {item.totalPrice}</td>
+                <td className='py-3 px-4 text-gray-700 border-t border-gray-300 text-center'>{currency} {item.totalPrice}</td>
                 <td className='py-3 px-4 border-t border-gray-300 flex'>
                   <button className={`py-1 px-3 text-xs rounded-full mx-auto ${item.isPaid ? "bg-green-200 text-green-600" : "bg-amber-200 text-yellow-600"}`}>{item.isPaid ? "Completed" : "Pending"}</button>
                 </td>

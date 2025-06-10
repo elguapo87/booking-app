@@ -67,3 +67,26 @@ export type RadioBtnProps = {
     selected?: boolean;
     onChange?: (label: string) => void;
 };
+
+
+// Booking Data Types
+export type BookedRoom = {
+    roomType: string;
+};
+
+export type RoomUser = {
+    username: string;
+};
+
+export type Booking = {
+    room: BookedRoom;
+    totalPrice: number;
+    user: RoomUser;
+    isPaid: boolean;
+};
+
+export interface BookingData {
+    totalBookings: number;
+    totalRevenue: number;
+    bookings: Booking[];
+};

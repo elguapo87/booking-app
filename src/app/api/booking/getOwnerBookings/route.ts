@@ -23,7 +23,7 @@ export async function GET() {
         // Total revenue
         const totalRevenue = bookings.reduce((acc, booking) => acc + booking.totalPrice, 0);
 
-        return NextResponse.json({ success: true, totalBookings, totalRevenue });
+        return NextResponse.json({ success: true, dashboardData: { totalBookings, totalRevenue, bookings } });
 
     } catch (error) {
         return NextResponse.json({ success: false, message: "Failed to fetch bookins" });
