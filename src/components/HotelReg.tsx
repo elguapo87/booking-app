@@ -1,16 +1,50 @@
 "use client"
 
 import Image from "next/image";
-import { useContext, useEffect } from "react"
+import { useContext, useEffect, useState } from "react"
 import { assets } from "../../public/assets";
 import { AppContext } from "@/context/AppContext";
+import toast from "react-hot-toast";
 
 const HotelReg = () => {
 
     const context = useContext(AppContext);
     if (!context) throw new Error("HotelReg must be within AppContextProvider");
-    const { setShowHotelReg } = context;
+    const { setShowHotelReg, axios, getToken, setIsOwner } = context;
 
+    const [name, setName] = useState("");
+    const [contact, setContact] = useState("");
+    const [address, setAddress] = useState("");
+    const [city, setCity] = useState("");
+
+    const onSubmitHandler = async (e: { preventDefault: () => void }) => {
+        e.preventDefault();
+
+        try {
+            const token = await getToken();
+            const { data } = await axios.post("/api/hotel/registerHotel", {
+                name,
+                contact,
+                address,
+                city
+            }, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            
+            if (data.success) {
+                toast.success(data.message);
+                setIsOwner(true);
+                setShowHotelReg(false);
+
+            } else {
+                toast.error(data.message);
+            }
+
+        } catch (error) {
+            const errMessage = error instanceof Error ? error.message : "An unknown error occurred";
+            toast.error(errMessage);
+        }
+    };
 
     useEffect(() => {
         const originalOverflow = document.body.style.overflow;
@@ -22,8 +56,8 @@ const HotelReg = () => {
     }, []);
 
     return (
-        <div className="fixed top-0 bottom-0 left-0 right-0 z-100 flex items-center justify-center bg-black/70">
-            <form className="flex bg-white rounded-xl max-w-4xl max-md:mx-2">
+        <div onClick={() => setShowHotelReg(false)} className="fixed top-0 bottom-0 left-0 right-0 z-100 flex items-center justify-center bg-black/70">
+            <form onSubmit={onSubmitHandler} onClick={(e) => e.stopPropagation()} className="flex bg-white rounded-xl max-w-4xl max-md:mx-2">
                 <Image src={assets.registerImage} alt='Reg-Image' className='w-1/2 rounded-xl rounded-r-none hidden md:block' />
 
                 <div className='relative flex flex-col items-center md:w-1/2 p-8 md:p-10'>
@@ -33,28 +67,28 @@ const HotelReg = () => {
                     {/* HOTEL NAME */}
                     <div className='w-full mt-4'>
                         <label htmlFor="name" className='font-medium text-gray-500'>Hotel Name</label>
-                        <input type="text" id='name' placeholder='Type here' className='border border-gray-200 rounded w-full px-3 py-2.5 mt-1 outline-indigo-500 font-light' required />
+                        <input onChange={(e) => setName(e.target.value)} value={name} type="text" id='name' placeholder='Type here' className='border border-gray-200 rounded w-full px-3 py-2.5 mt-1 outline-indigo-500 font-light' required />
                     </div>
 
                     {/* PHONE */}
                     <div className='w-full mt-4'>
                         <label htmlFor="contact" className='font-medium text-gray-500'>Phone</label>
-                        <input type="text" id='contact' placeholder='Type here' className='border border-gray-200 rounded w-full px-3 py-2.5 mt-1 outline-indigo-500 font-light' required />
+                        <input onChange={(e) => setContact(e.target.value)} value={contact} type="text" id='contact' placeholder='Type here' className='border border-gray-200 rounded w-full px-3 py-2.5 mt-1 outline-indigo-500 font-light' required />
                     </div>
 
                     {/* ADDRESS */}
                     <div className='w-full mt-4'>
                         <label htmlFor="address" className='font-medium text-gray-500'>Address</label>
-                        <input type="text" id='address' placeholder='Type here' className='border border-gray-200 rounded w-full px-3 py-2.5 mt-1 outline-indigo-500 font-light' required />
+                        <input onChange={(e) => setAddress(e.target.value)} value={address} type="text" id='address' placeholder='Type here' className='border border-gray-200 rounded w-full px-3 py-2.5 mt-1 outline-indigo-500 font-light' required />
                     </div>
 
                     {/* CITY */}
                     <div className='w-full mt-4'>
                         <label htmlFor="city" className='font-medium text-gray-500'>City</label>
-                        <input type="text" id='city' placeholder='Type here' className='border border-gray-200 rounded w-full px-3 py-2.5 mt-1 outline-indigo-500 font-light' required />
+                        <input onChange={(e) => setCity(e.target.value)} value={city} type="text" id='city' placeholder='Type here' className='border border-gray-200 rounded w-full px-3 py-2.5 mt-1 outline-indigo-500 font-light' required />
                     </div>
 
-                    <button className='bg-indigo-500 hover:bg-indigo-600 transition-all text-white mr-auto px-6 py-2 rounded cursor-pointer mt-6'>Register</button>
+                    <button type="submit" className='bg-indigo-500 hover:bg-indigo-600 transition-all text-white mr-auto px-6 py-2 rounded cursor-pointer mt-6'>Register</button>
                 </div>
             </form>
         </div>
