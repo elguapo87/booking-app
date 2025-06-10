@@ -1,12 +1,66 @@
 "use client"
 
-import { useState } from "react"
-import { roomsDummyData } from "../../../../public/assets"
+import { useContext, useEffect, useState } from "react"
+
 import Title from "@/components/Title";
+import { AppContext } from "@/context/AppContext";
+import { RoomType } from "@/types";
+import toast from "react-hot-toast";
 
 const RoomListPage = () => {
 
-  const [rooms, setRooms] = useState(roomsDummyData);
+  const context = useContext(AppContext);
+  if (!context) throw new Error("RoomListPage must be within AppContextProvider");
+  const { axios, getToken, user, currency } = context;
+
+  const [rooms, setRooms] = useState<RoomType[] | null>([]);
+
+  // Fetch rooms of the hotel owner 
+  const fetchRooms = async () => {
+    try {
+      const token = await getToken();
+
+      const { data } = await axios.get("/api/hotel/getOwnerRooms", {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+
+      if (data.success) {
+        setRooms(data.ownerRooms);
+
+      } else {
+        toast.error(data.message);
+      }
+
+    } catch (error) {
+      const errMessage = error instanceof Error ? error.message : "An unknown error occurred";
+      toast.error(errMessage);
+    }
+  };
+
+  // Toggle availability of the room
+  const toggleAvailability = async (roomId: string) => {
+    try {
+      const { data } = await axios.post("/api/hotel/changeAvailability", { roomId });
+
+      if (data.success) {
+        toast.success(data.message);
+        await fetchRooms();
+
+      } else {
+        toast.error(data.message);
+      }
+
+    } catch (error) {
+      const errMessage = error instanceof Error ? error.message : "An unknown error occurred";
+      toast.error(errMessage);
+    }
+  };
+
+  useEffect(() => {
+    if (user) {
+      fetchRooms();
+    }
+  }, [user]);
 
   return (
     <div>
@@ -31,18 +85,18 @@ const RoomListPage = () => {
           </thead>
 
           <tbody className="text-sm">
-            {rooms.map((item, index) => (
+            {rooms?.map((item, index) => (
               <tr key={index}>
                 <td className="py-3 px-4 text-gray-700 border-t border-gray-300">{item.roomType}</td>
                 <td className="py-3 px-4 text-gray-700 border-t border-gray-300 max-sm:hidden">{item.amenities.join(", ")}</td>
-                <td className="py-3 px-4 text-gray-700 border-t border-gray-300">{item.pricePerNight}</td>
+                <td className="py-3 px-4 text-gray-700 border-t border-gray-300">{currency} {item.pricePerNight}</td>
                 <td className="py-3 px-4 border-t border-gray-300 text-sm text-red-500 text-center">
                   <label className="relative inline-flex items-center cursor-pointer w-12 h-7">
                     {/* Hidden Checkbox as Peer */}
                     <input
                       type="checkbox"
                       checked={item.isAvailable}
-                      onChange={() => { const updatedRooms = [...rooms]; updatedRooms[index].isAvailable = !updatedRooms[index].isAvailable; setRooms(updatedRooms) }}
+                      onChange={() => toggleAvailability(item._id)}
                       className="sr-only peer"
                     />
 
