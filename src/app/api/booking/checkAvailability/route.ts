@@ -1,10 +1,12 @@
-import roomModel from "@/models/roomModel";
+import connectDB from "@/config/db";
 import { availability } from "@/utils/availability";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
     try {
         const { checkInDate, checkOutDate, room } = await req.json();
+
+        await connectDB();
 
         const isAvailable = await availability({ checkInDate, checkOutDate, room });
 

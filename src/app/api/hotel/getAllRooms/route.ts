@@ -1,8 +1,11 @@
+import connectDB from "@/config/db";
 import roomModel from "@/models/roomModel";
 import { NextResponse } from "next/server";
 
 export async function GET() {
     try {
+        await connectDB();
+
         const rooms = await roomModel.find({ isAvailable: true }).populate({
             path: "hotel",
             populate: {

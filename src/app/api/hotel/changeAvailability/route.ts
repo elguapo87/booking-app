@@ -1,9 +1,12 @@
+import connectDB from "@/config/db";
 import roomModel from "@/models/roomModel";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
     try {
         const { roomId } = await req.json();
+
+        await connectDB();
 
         const roomData = await roomModel.findById(roomId);
 
