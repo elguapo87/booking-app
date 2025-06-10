@@ -5,6 +5,8 @@ import ConditionalNavbar from "@/components/ConditionalNavbar";
 import { ClerkProvider } from "@clerk/nextjs";
 import Footer from "@/components/Footer";
 import HotelReg from "@/components/HotelReg";
+import AppContextProvider from "@/context/AppContext";
+import { Toaster } from "react-hot-toast";
 
 const outfit = Outfit({
   variable: "--font-outfit",
@@ -28,18 +30,21 @@ export default function RootLayout({
 }>) {
   return (
     <ClerkProvider>
-      <html lang="en">
-        <body className={`${outfit.variable} ${playfair.variable} font-sans antialiased`}>
-          <ConditionalNavbar />
-          {false && <HotelReg />}
+      <AppContextProvider>
+        <html lang="en">
+          <body className={`${outfit.variable} ${playfair.variable} font-sans antialiased`}>
+            <Toaster />
+            <ConditionalNavbar />
+            {false && <HotelReg />}
 
-          <div className="min-h-[70vh]">
-            {children}
-          </div>
+            <div className="min-h-[70vh]">
+              {children}
+            </div>
 
-          <Footer />
-        </body>
-      </html>
+            <Footer />
+          </body>
+        </html>
+      </AppContextProvider>
     </ClerkProvider>
   );
 }
