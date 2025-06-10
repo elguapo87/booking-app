@@ -4,7 +4,6 @@ import "./globals.css";
 import ConditionalNavbar from "@/components/ConditionalNavbar";
 import { ClerkProvider } from "@clerk/nextjs";
 import Footer from "@/components/Footer";
-import HotelReg from "@/components/HotelReg";
 import AppContextProvider from "@/context/AppContext";
 import { Toaster } from "react-hot-toast";
 import HotelRegWrapper from "@/components/HotelRegWrapper";

@@ -1,10 +1,16 @@
 "use client"
 
 import Image from "next/image";
-import { useEffect } from "react"
+import { useContext, useEffect } from "react"
 import { assets } from "../../public/assets";
+import { AppContext } from "@/context/AppContext";
 
 const HotelReg = () => {
+
+    const context = useContext(AppContext);
+    if (!context) throw new Error("HotelReg must be within AppContextProvider");
+    const { setShowHotelReg } = context;
+
 
     useEffect(() => {
         const originalOverflow = document.body.style.overflow;
@@ -21,7 +27,7 @@ const HotelReg = () => {
                 <Image src={assets.registerImage} alt='Reg-Image' className='w-1/2 rounded-xl rounded-r-none hidden md:block' />
 
                 <div className='relative flex flex-col items-center md:w-1/2 p-8 md:p-10'>
-                    <Image src={assets.closeIcon} alt='Close-Icon' className='absolute top-4 right-4 h-4 w-4 cursor-pointer' />
+                    <Image onClick={() => setShowHotelReg(false)} src={assets.closeIcon} alt='Close-Icon' className='absolute top-4 right-4 h-4 w-4 cursor-pointer' />
                     <p className='text-2xl font-semibold mt-6'>Register Your Hotel</p>
 
                     {/* HOTEL NAME */}

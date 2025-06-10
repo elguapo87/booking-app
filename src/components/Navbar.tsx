@@ -2,10 +2,11 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { assets } from "../../public/assets";
-import { useClerk, UserButton, useUser } from "@clerk/nextjs";
-import { usePathname, useRouter } from "next/navigation";
+import { useClerk, UserButton } from "@clerk/nextjs";
+import { usePathname } from "next/navigation";
+import { AppContext } from "@/context/AppContext";
 
 const BookIcon = () => {                
   return (
@@ -16,6 +17,11 @@ const BookIcon = () => {
 }; 
 
 const Navbar = () => {
+
+    const context = useContext(AppContext);
+    if (!context) throw new Error("Navbar must be within AppContextProvider");
+    const { isOwner, setShowHotelReg, router, user } = context;
+
     const navLinks = [
         { name: 'Home', path: '/' },
         { name: 'Hotels', path: '/rooms' },
@@ -27,9 +33,7 @@ const Navbar = () => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
 
     const { openSignIn } = useClerk();
-    const { user } = useUser();
 
-    const router = useRouter();
     const pathName = usePathname();
 
     useEffect(() => {
@@ -63,9 +67,14 @@ const Navbar = () => {
                         <div className={`${isScrolled ? "bg-gray-700" : "bg-white"} h-0.5 w-0 group-hover:w-full transition-all duration-300`} />
                     </Link>
                 ))}
-                <button onClick={() => router.push("/hotelOwner")} className={`border px-4 py-1 text-sm font-light rounded-full cursor-pointer ${isScrolled ? 'text-black' : 'text-white'} transition-all`}>
-                    Dashboard
-                </button>
+
+                {
+                    user 
+                     &&
+                    <button onClick={() => isOwner ? router.push("/hotelOwner") : setShowHotelReg(true) } className={`border px-4 py-1 text-sm font-light rounded-full cursor-pointer ${isScrolled ? 'text-black' : 'text-white'} transition-all`}>
+                        {isOwner ? "Dashboard" : "List Your Hotel"}
+                    </button>
+                }
             </div>
 
             {/* Desktop Right */}
@@ -117,8 +126,8 @@ const Navbar = () => {
                 {
                     user 
                      &&
-                    <button onClick={() => router.push("/hotelOwner")} className="border px-4 py-1 text-sm font-light rounded-full cursor-pointer transition-all">
-                        Dashboard
+                    <button onClick={() => isOwner ? router.push("/hotelOwner") : setShowHotelReg(true)} className="border px-4 py-1 text-sm font-light rounded-full cursor-pointer transition-all">
+                        {isOwner ? "Dashboard" : "List Your Hotel"} 
                     </button>
                 }
 
