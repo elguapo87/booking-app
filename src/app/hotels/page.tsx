@@ -2,8 +2,6 @@
 
 import Hotel from "@/components/Hotels";
 
-
-
 const hotels = [
   {
     image: "https://images.unsplash.com/photo-1747134392471-831ea9a48e1e?q=80&w=2000&auto=format&fit=crop",
