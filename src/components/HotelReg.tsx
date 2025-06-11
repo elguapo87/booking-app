@@ -67,10 +67,10 @@ const HotelReg = () => {
 
                     {/* HOTEL IMAGE */}
                     <div className="w-full mt-4 md:mt-6">
-                        <label htmlFor="image" className="flex items-end gap-5" >
-                            <span className="font-medium text-gray-500 md:mb-1">Hotel Image</span>
+                        <label htmlFor="image" className="flex items-end justify-between" >
+                            <span className="font-medium text-gray-500 md:mb-2">Hotel Image</span>
                             <input onChange={(e) => setImage(e.target.files && e.target.files[0])} type="file" id="image" hidden />
-                            <Image src={image ? URL.createObjectURL(image) : assets.uploadArea} width={100} height={100} alt="" className="w-18 h-10 md:w-25 md:h-15 rounded" />
+                            <Image src={image ? URL.createObjectURL(image) : assets.uploadArea} width={100} height={100} alt="" className="w-18 h-10 md:w-25 md:h-15 rounded md:mr-5" />
                         </label>
                     </div>
 
