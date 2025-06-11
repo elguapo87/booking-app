@@ -26,18 +26,19 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ success: false, message: "Hotel already registered" });
         }
 
-        // Upload the image to Cloudinary
-        let imageUrl = "";
-        if (image) {
-            const arrayBuffer = await image.arrayBuffer();
-            const buffer = Buffer.from(arrayBuffer);
-
-            const uploadRes = await cloudinary.uploader.upload(`data:image/jpeg;base64,${buffer.toString("base64")}`, {
-                folder: "hotels",
-            });
-
-            imageUrl = uploadRes.secure_url;
+        if (!image) {
+            return NextResponse.json({ success: false, message: "Hotel image is required" }, { status: 400 });
         }
+
+        // Upload the image to Cloudinary
+        const arrayBuffer = await image.arrayBuffer();
+        const buffer = Buffer.from(arrayBuffer);
+        const uploadRes = await cloudinary.uploader.upload(
+            `data:image/jpeg;base64,${buffer.toString("base64")}`,
+            { folder: "hotels" }
+        );
+
+        const imageUrl = uploadRes.secure_url;
 
         await hotelModel.create({
             name,

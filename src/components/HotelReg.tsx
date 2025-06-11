@@ -18,17 +18,32 @@ const HotelReg = () => {
     const [city, setCity] = useState("");
     const [image, setImage] = useState<File | null>(null);
 
+    const [isLoading, setIsLoading] = useState(false);
+
     const onSubmitHandler = async (e: { preventDefault: () => void }) => {
         e.preventDefault();
 
+        setIsLoading(true);
+
+        if (!image) {
+            toast.error("Hotel image is required");
+            return;
+        }
+
         try {
             const token = await getToken();
-            const { data } = await axios.post("/api/hotel/registerHotel", {
-                name,
-                contact,
-                address,
-                city
-            }, {
+
+            const formData = new FormData();
+            formData.append("name", name);
+            formData.append("contact", contact);
+            formData.append("address", address);
+            formData.append("city", city);
+
+            if (image) {
+                formData.append("image", image);
+            }
+            
+            const { data } = await axios.post("/api/hotel/registerHotel", formData, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             
@@ -44,6 +59,9 @@ const HotelReg = () => {
         } catch (error) {
             const errMessage = error instanceof Error ? error.message : "An unknown error occurred";
             toast.error(errMessage);
+
+        } finally {
+            setIsLoading(false);
         }
     };
 
@@ -100,7 +118,9 @@ const HotelReg = () => {
                         <input onChange={(e) => setCity(e.target.value)} value={city} type="text" id='city' placeholder='Type here' className='border border-gray-200 rounded w-full px-3 py-1.5 md:py-2.5 mt-1 outline-indigo-500 font-light' required />
                     </div>
 
-                    <button type="submit" className='bg-indigo-500 hover:bg-indigo-600 transition-all text-white mr-auto px-4 py-1.25 md:px-6 md:py-2 rounded cursor-pointer mt-6'>Register</button>
+                    <button type="submit" className='bg-indigo-500 hover:bg-indigo-600 transition-all text-white mr-auto px-4 py-1.25 md:px-6 md:py-2 rounded cursor-pointer mt-6' disabled={isLoading}>
+                        {isLoading ? "Registration..." : "Register"}
+                    </button>
                 </div>
             </form>
         </div>
