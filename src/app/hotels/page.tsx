@@ -1,6 +1,6 @@
 "use client";
 
-import Hotel from "@/components/AllHotels";
+import AllHotels from "@/components/AllHotels";
 import { AppContext } from "@/context/AppContext";
 import { useContext, useEffect, useState } from "react";
 import toast from "react-hot-toast";
@@ -8,6 +8,15 @@ import toast from "react-hot-toast";
 type OwnerType = {
   username: string;
   image: string;
+};
+
+type Room = {
+  _id: string;
+  roomType: string;
+  pricePerNight: number;
+  amenities: string[];
+  images: string[];
+  isAvailable: boolean;
 };
 
 type AllHotelsData = {
@@ -18,6 +27,7 @@ type AllHotelsData = {
   city: string;
   image: string;
   owner: OwnerType;
+  rooms: Room[];
 };
 
 const HotelsPage = () => {
@@ -53,7 +63,7 @@ const HotelsPage = () => {
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-10 mx-4 md:mx-16 lg:mx-32 mt-20 md:mt-30 pb-20 md:pb-40">
       {hotels?.map((hotel) => (
-        <Hotel key={hotel._id} hotel={hotel} />
+        <AllHotels key={hotel._id} hotel={hotel} />
       ))}
     </div>
   );

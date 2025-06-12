@@ -32,7 +32,7 @@ export default function RootLayout({
     <ClerkProvider>
       <AppContextProvider>
         <html lang="en">
-          <body className={`${outfit.variable} ${playfair.variable} font-sans antialiased`}>
+          <body className={`${outfit.variable} ${playfair.variable} font-sans antialiased bg-stone-100`}>
             <Toaster />
             <ConditionalNavbar />
             

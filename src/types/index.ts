@@ -19,7 +19,7 @@ export type HotelType = {
     contact: string;
     owner: UserType;
     city: string;
-    image: string;
+    image?: string;
     createdAt: string | Date;
     updatedAt: string | Date;
     __v?: number;
