@@ -23,12 +23,13 @@ const HotelReg = () => {
     const onSubmitHandler = async (e: { preventDefault: () => void }) => {
         e.preventDefault();
 
-        setIsLoading(true);
-
+        
         if (!image) {
             toast.error("Hotel image is required");
             return;
         }
+        
+        setIsLoading(true);
 
         try {
             const token = await getToken();

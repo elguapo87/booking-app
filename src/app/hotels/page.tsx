@@ -2,21 +2,13 @@
 
 import AllHotels from "@/components/AllHotels";
 import { AppContext } from "@/context/AppContext";
+import { RoomType } from "@/types";
 import { useContext, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 
 type OwnerType = {
   username: string;
   image: string;
-};
-
-type Room = {
-  _id: string;
-  roomType: string;
-  pricePerNight: number;
-  amenities: string[];
-  images: string[];
-  isAvailable: boolean;
 };
 
 type AllHotelsData = {
@@ -27,27 +19,38 @@ type AllHotelsData = {
   city: string;
   image: string;
   owner: OwnerType;
-  rooms: Room[];
+  rooms: RoomType;
 };
 
 const HotelsPage = () => {
 
   const context = useContext(AppContext);
-  if (!context) throw new Error("HotelReg must be within AppContextProvider");
+  if (!context) throw new Error("HotelsPage must be within AppContextProvider");
   const { axios } = context;
 
   const [hotels, setHotels] = useState<AllHotelsData[] | null>(null);
 
-  const fetchHotels = async () => {
+  const fetchData = async () => {
     try {
-      const { data } = await axios.get("/api/hotel/getAllHotels");
+      const [hotelRes, roomRes] = await Promise.all([
+        axios.get("/api/hotel/getAllHotels"),
+        axios.get("/api/hotel/getAllRooms"),
+      ]);
 
-      if (data.success) {
-        setHotels(data.hotels);
-        console.log(hotels);
-        
+      if (hotelRes.data.success && roomRes.data.success) {
+        const allHotels = hotelRes.data.hotels;
+        const allRooms = roomRes.data.rooms;
+
+        // Attach rooms to each hotel
+        const hotelsWithRooms = allHotels.map((hotel: AllHotelsData) => ({
+          ...hotel,
+          rooms: allRooms.filter((room: RoomType) => room.hotel._id === hotel._id)
+        }));
+
+        setHotels(hotelsWithRooms);
+
       } else {
-        toast.error(data.message);
+        toast.error("Failed to fetch hotels or rooms");
       }
 
     } catch (error) {
@@ -57,7 +60,7 @@ const HotelsPage = () => {
   };
 
   useEffect(() => {
-    fetchHotels();
+    fetchData();
   }, []);
 
   return (

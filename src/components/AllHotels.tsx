@@ -1,7 +1,10 @@
-// components/HotelCard.tsx
 "use client";
+import { AppContext } from "@/context/AppContext";
+import { RoomType } from "@/types";
 import Image from "next/image";
-import { useState } from "react";
+import Link from "next/link";
+import { useContext, useEffect, useState } from "react";
+import toast from "react-hot-toast";
 
 type OwnerType = {
   username: string;
@@ -16,10 +19,16 @@ type AllHotelsData = {
   city: string;
   image: string;
   owner: OwnerType;
+  rooms: RoomType;
 };
 
 
 const AllHotels = ({ hotel }: { hotel: AllHotelsData }) => {
+
+  const context = useContext(AppContext);
+  if (!context) throw new Error("AllHotels must be within AppContextProvider");
+  const { axios, router } = context;
+
   const [tilt, setTilt] = useState({ x: 0, y: 0 });
   const threshold = 12;
 
@@ -30,14 +39,18 @@ const AllHotels = ({ hotel }: { hotel: AllHotelsData }) => {
     setTilt({ x: y * -threshold, y: x * threshold });
   };
 
+  console.log(hotel);
+  
+
   return (
     <div
+      onClick={() => router.push(`/hotels/${hotel._id}`)}
       className="rounded-xl shadow-xl overflow-hidden transition-transform duration-200 ease-out cursor-pointer max-w-96 bg-stone-50"
       onMouseMove={handleMove}
       onMouseLeave={() => setTilt({ x: 0, y: 0 })}
       style={{ transform: `perspective(1000px) rotateX(${tilt.x}deg) rotateY(${tilt.y}deg)` }}
     >
-      <img src={hotel.image} alt="Hotel" className="w-full h-52 object-cover" />
+      <Image src={hotel.image} alt="Hotel" width={500} height={500} className="w-full h-52 object-cover" />
       <div className="flex items-center justify-between px-4 mt-5 gap-4">
         <h2 className="text-lg font-semibold text-gray-800 truncate max-w-[60%]">{hotel.name}</h2>
         <h3 className="text-sm text-gray-600">{hotel.city}</h3>
@@ -47,7 +60,7 @@ const AllHotels = ({ hotel }: { hotel: AllHotelsData }) => {
 
       <div className="flex items-end gap-3 justify-between px-4 pb-6">
         <h3 className=" text-gray-700 text-lg">
-          <span className="text-gray-600 text-base">Owner: </span> 
+          <span className="text-gray-600 text-base">Owner: </span>
           {hotel.owner.username}
         </h3>
         <Image src={hotel.owner.image} alt="Owner-Image" width={100} height={100} className="w-10 h-10 object-cover rounded-full" />
