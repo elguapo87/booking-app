@@ -19,7 +19,7 @@ type AllHotelsData = {
   city: string;
   image: string;
   owner: OwnerType;
-  rooms: RoomType;
+  rooms: RoomType[];
 };
 
 const HotelsPage = () => {

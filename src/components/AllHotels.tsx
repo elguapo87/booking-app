@@ -2,9 +2,7 @@
 import { AppContext } from "@/context/AppContext";
 import { RoomType } from "@/types";
 import Image from "next/image";
-import Link from "next/link";
-import { useContext, useEffect, useState } from "react";
-import toast from "react-hot-toast";
+import { useContext, useState } from "react";
 
 type OwnerType = {
   username: string;
@@ -19,7 +17,7 @@ type AllHotelsData = {
   city: string;
   image: string;
   owner: OwnerType;
-  rooms: RoomType;
+  rooms: RoomType[];
 };
 
 
@@ -27,7 +25,7 @@ const AllHotels = ({ hotel }: { hotel: AllHotelsData }) => {
 
   const context = useContext(AppContext);
   if (!context) throw new Error("AllHotels must be within AppContextProvider");
-  const { axios, router } = context;
+  const { router } = context;
 
   const [tilt, setTilt] = useState({ x: 0, y: 0 });
   const threshold = 12;
@@ -39,12 +37,13 @@ const AllHotels = ({ hotel }: { hotel: AllHotelsData }) => {
     setTilt({ x: y * -threshold, y: x * threshold });
   };
 
-  console.log(hotel);
-  
-
   return (
     <div
-      onClick={() => router.push(`/hotels/${hotel._id}`)}
+      onClick={() => {
+        const encodedHotel = encodeURIComponent(JSON.stringify(hotel));
+        router.push(`/hotels/${hotel._id}?data=${encodedHotel}`);
+      }}
+
       className="rounded-xl shadow-xl overflow-hidden transition-transform duration-200 ease-out cursor-pointer max-w-96 bg-stone-50"
       onMouseMove={handleMove}
       onMouseLeave={() => setTilt({ x: 0, y: 0 })}
