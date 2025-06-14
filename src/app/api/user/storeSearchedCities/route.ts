@@ -3,7 +3,9 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
     try {
-        const recentSearchedCities = await req.json();
+        const body = await req.json();
+        const { recentSearchedCities } = body;
+
         const { authorized, user } = await protectUser();
         if (!authorized || !user) {
             return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });

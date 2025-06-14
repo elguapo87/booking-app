@@ -27,12 +27,14 @@ const RadioButton = ({ label, selected = false, onChange = () => {} }: RadioBtnP
 };
 
 const AllRooms = () => {
+    
+    const searchParams = useSearchParams();
+    const destination = searchParams.get("destination")?.toLowerCase() || "";
 
     const context = useContext(AppContext);                                               
     if (!context) throw new Error("RoomListPage must be within AppContextProvider");
     const { router, rooms, currency } = context;
 
-    const searchParams = useSearchParams();
 
     const [openFilters, setOpenFilters] = useState(false);
 
@@ -86,8 +88,12 @@ const AllRooms = () => {
             });
         };
 
+        const matchesDestination = (room: RoomType) => {
+            return destination === "" || room.hotel.city.toLowerCase().includes(destination);
+        };
+
         let newFilteredRooms = rooms.filter(
-            (room) => matchesRoomTypes(room) &&  matchesPriceRange(room)
+            (room) => matchesRoomTypes(room) &&  matchesPriceRange(room) && matchesDestination(room)
         );
 
         if (sortByFilter === "Price Low to High") {
@@ -103,6 +109,12 @@ const AllRooms = () => {
         setFilteredRooms(newFilteredRooms);
 
     }, [rooms, roomTypeFilter, priceRangeFilter, sortByFilter]);
+
+    const clearFilters = () => {
+        setRoomTypeFilter([]);
+        setPriceRangeFilter([]);
+        setSortByFilter("");
+    };
 
     return (
         <div className='flex flex-col-reverse lg:flex-row items-start justify-between pt-28 md:pt-35 px-4 md:px-16 lg:px-24 xl:px-32'>
@@ -154,7 +166,7 @@ const AllRooms = () => {
                     <p className="text-base font-medium text-gray-800">FILTERS</p>
                     <div className="text-xs cursor-pointer">
                         <span onClick={() => setOpenFilters(prev => !prev)} className='lg:hidden'>{openFilters ? "HIDE" : "SHOW"}</span>
-                        <span className="hidden lg:block">CLEAR</span>
+                        <span onClick={clearFilters} className="hidden lg:block">CLEAR</span>
                     </div>
                 </div>
 
