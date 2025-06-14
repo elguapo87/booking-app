@@ -9,7 +9,7 @@ import { assets } from '../../public/assets'
 const HotelCard = ({ room, index }: HotelCardProps) => {
   return (
     <Link onClick={() => scrollTo(0, 0)} href={`/rooms/${room._id}`} className='relative max-w-70 w-full rounded-xl overflow-hidden bg-white text-gray-500/90 shadow-[0px_4px_4px_rgba(0,0,0,0.05)]'>
-        <Image src={room.images[0]} alt='' />
+        <Image src={room.images[0]} alt='' width={500} height={500} className='aspect-[2/1]' />
         {
             index % 2 === 0 
                  &&

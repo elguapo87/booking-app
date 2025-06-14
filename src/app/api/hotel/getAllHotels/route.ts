@@ -1,9 +1,12 @@
 import hotelModel from "@/models/hotelModel";
 import { NextResponse } from "next/server";
 import "@/models/userModel";
+import connectDB from "@/config/db";
 
 export async function GET() {
     try {
+        await connectDB();
+
         const hotels = await hotelModel.find({}).populate({
             path: "owner",
             select: "username image",

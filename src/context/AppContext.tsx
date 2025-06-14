@@ -6,6 +6,7 @@ import { createContext, useEffect, useState } from "react";
 import { UserResource, GetToken } from "@clerk/types";
 import axios from "axios";
 import toast from "react-hot-toast";
+import { RoomType } from "@/types";
 
 interface AppContextType {
     currency: string;
@@ -19,6 +20,8 @@ interface AppContextType {
     searchedCities: string[];
     setSearchedCities: React.Dispatch<React.SetStateAction<string[]>>;
     axios: typeof axios;
+    rooms: RoomType[];
+    setRooms: React.Dispatch<React.SetStateAction<RoomType[]>>
 };
 
 export const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -33,6 +36,7 @@ const AppContextProvider = ({ children }: { children: React.ReactNode }) => {
     const [isOwner, setIsOwner] = useState(false);
     const [showHotelReg, setShowHotelReg] = useState(false);
     const [searchedCities, setSearchedCities] = useState<string[]>([]);
+    const [rooms, setRooms] = useState<RoomType[]>([]);
 
     const fetchUser = async () => {
         const token = await getToken();
@@ -59,11 +63,32 @@ const AppContextProvider = ({ children }: { children: React.ReactNode }) => {
         }
     };
 
+    const fetchRooms = async () => {
+        try {
+            const { data } = await axios.get("/api/hotel/getAllRooms");
+
+            if (data.success) {
+                setRooms(data.rooms);
+
+            } else {
+                toast.error(data.message);
+            }
+
+        } catch (error) {
+            const errMessage = error instanceof Error ? error.message : "An unknown error occurred";
+            toast.error(errMessage);
+        }
+    };
+
     useEffect(() => {
         if (user) {
             fetchUser();
         }
     }, [user]);
+
+    useEffect(() => {
+        fetchRooms();
+    }, []);
 
     const value = {
         currency,
@@ -73,7 +98,8 @@ const AppContextProvider = ({ children }: { children: React.ReactNode }) => {
         isOwner, setIsOwner,
         showHotelReg, setShowHotelReg,
         searchedCities, setSearchedCities,
-        axios
+        axios,
+        rooms, setRooms
     };
 
     return (

@@ -3,7 +3,7 @@ import { assets } from "../../public/assets"
 
 const Footer = () => {
     return (
-        <div className="bg-[#e9e9e99f] text-gray-500/80 md:pt-8 px-6 md:px-16 lg:px-24 xl:px-32">
+        <div className="bg-[#e9e9e99f] text-gray-500/80 md:pt-8 px-6 md:px-16 lg:px-24 xl:px-32 max-md:pt-20">
             <div className='flex flex-wrap justify-around gap-12 md:gap-6'>
                 <div className='max-w-80'>
                     <Image src={assets.easy_logo} alt="Logo" className='mb-4 h-7 w-50 invert opacity-80' />
