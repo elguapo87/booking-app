@@ -21,7 +21,8 @@ interface AppContextType {
     setSearchedCities: React.Dispatch<React.SetStateAction<string[]>>;
     axios: typeof axios;
     rooms: RoomType[];
-    setRooms: React.Dispatch<React.SetStateAction<RoomType[]>>
+    setRooms: React.Dispatch<React.SetStateAction<RoomType[]>>;
+    fetchRooms: () => void;
 };
 
 export const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -99,7 +100,8 @@ const AppContextProvider = ({ children }: { children: React.ReactNode }) => {
         showHotelReg, setShowHotelReg,
         searchedCities, setSearchedCities,
         axios,
-        rooms, setRooms
+        rooms, setRooms,
+        fetchRooms
     };
 
     return (

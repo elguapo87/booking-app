@@ -13,7 +13,7 @@ const AddRoom = () => {
 
   const context = useContext(AppContext);
   if (!context) throw new Error("AddRoomPage must be within AppContextProvider");
-  const { axios, getToken } = context;
+  const { axios, getToken, fetchRooms } = context;
 
   const [images, setImages] = useState<{ [key: string]: File | null }>({
     "1": null,
@@ -73,8 +73,9 @@ const AddRoom = () => {
 
       if (data.success) {
         toast.success(data.message);
+        fetchRooms();
         setInputs({
-           roomType: "",
+          roomType: "",
           pricePerNight: 0,
           amenities: {
             "Free WiFi": false,
@@ -140,10 +141,11 @@ const AddRoom = () => {
         <div className="flex-1 max-w-48">
           <p className="text-gray-800 mt-4">Room Type</p>
           <select onChange={(e) => setInputs({ ...inputs, roomType: e.target.value })} value={inputs.roomType} className="border border-gray-300 opacity-70 mt-1 rounded p-2 w-full">
+            <option value="any">any</option>
             <option value="Single Bed">Single Bed</option>
             <option value="Double Bed">Double Bed</option>
             <option value="Luxury Room">Luxury Room</option>
-            <option value="Family Suit">Family Suit</option>
+            <option value="Family Suite">Family Suite</option>
           </select>
         </div>
 
