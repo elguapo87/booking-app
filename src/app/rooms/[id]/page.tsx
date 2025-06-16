@@ -2,12 +2,13 @@
 
 import { useParams } from "next/navigation"
 import { useContext, useEffect, useState } from "react";
-import { assets, facilityIcons, roomCommonData, roomsDummyData } from "../../../../public/assets";
+import { assets, facilityIcons, roomCommonData } from "../../../../public/assets";
 import { RoomType } from "@/types";
 import Image, { StaticImageData } from "next/image";
 import StarRating from "@/components/StarRating";
 import { AppContext } from "@/context/AppContext";
 import toast from "react-hot-toast";
+import { Span } from "next/dist/trace";
 
 const RoomDetails = () => {
 
@@ -23,6 +24,8 @@ const RoomDetails = () => {
     const [checkOutDate, setCheckOutDate] = useState<string | null>(null);
     const [guests, setGuests] = useState(1);
     const [isAvaliable, setIsAvailable] = useState(false);
+
+    const [showNumber, setShowNumber] = useState(false);
 
     const checkAvailability = async () => {
         try {
@@ -90,6 +93,9 @@ const RoomDetails = () => {
         room && setRoom(room);
         room && setMainImage(room.images[0]);
     }, [rooms]);
+
+    console.log(room?.hotel.contact);
+    
 
     return room && (
         <div className='py-28 md:py-35 px-4 md:px-16 lg:px-24 xl:px-32'>
@@ -214,8 +220,17 @@ const RoomDetails = () => {
                         </div>
                     </div>
                 </div>
+                
+        
+                <button onClick={() => setShowNumber((prev) => !prev)} className='px-6 py-2.5 mt-4 rounded text-white bg-primary hover:bg-primary/80 transition-all cursor-pointer'>Click for number</button>
+                
+                {showNumber && 
+                    <div className="flex items end gap-1"> 
+                        <Image src={assets.phone_icon} alt="Phone-Icon" className="w-6 h-6" />
+                        {room.hotel.contact}
+                    </div>
+                }
 
-                <button className='px-6 py-2.5 mt-4 rounded text-white bg-primary hover:bg-primary/80 transition-all cursor-pointer'>Contact Now</button>
             </div>
         </div>
     )

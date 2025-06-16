@@ -1,7 +1,7 @@
 "use client"
 
 import React, { useContext, useEffect, useState } from 'react'
-import { assets, userBookingsDummyData } from '../../../public/assets';
+import { assets } from '../../../public/assets';
 import Title from '@/components/Title';
 import Image from 'next/image';
 import { AppContext } from '@/context/AppContext';
@@ -26,7 +26,6 @@ const MyBookings = () => {
 
             if (data.success) {
                 setBookings(data.bookings);
-                console.log(data.bookings);
                 
             } else {
                 toast.error(data.message);
