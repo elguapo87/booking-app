@@ -4,6 +4,7 @@ import roomModel from "@/models/roomModel";
 import { availability } from "@/utils/availability";
 import { NextRequest, NextResponse } from "next/server";
 import "@/models/hotelModel";
+import transporter from "@/config/nodemailer";
 
 export async function POST(req: NextRequest) {
     const { room, checkInDate, checkOutDate, guests } = await req.json();
@@ -31,7 +32,7 @@ export async function POST(req: NextRequest) {
 
         totalPrice *= nights;
 
-        await bookingModel.create({
+        const booking = await bookingModel.create({
             user,
             room,
             hotel: roomData.hotel._id,
@@ -40,6 +41,28 @@ export async function POST(req: NextRequest) {
             guests: +guests,
             totalPrice
         });
+
+        const mailOptions = {
+            from: process.env.SENDER_EMAIL,
+            to: user.email,
+            subject: "Hotel Booking Details",
+            html: `
+                <h2>Your Booking Details</h2>
+                <p>Dear ${user.username || user.email},</p>
+                <p>Thank you for your booking! Here are your details:</p>
+                <ul>
+                   <li><strong>Booking ID:</strong> ${booking._id}</li>
+                   <li><strong>Hotel Name:</strong> ${roomData.hotel.name}</li>
+                   <li><strong>Location:</strong> ${roomData.hotel.address}</li>
+                   <li><strong>Date:</strong> ${booking.checkInDate.toDateString()} to ${booking.checkOutDate.toDateString()}</li>
+                   <li><strong>Booking Amount:</strong> ${process.env.CURRENCY || "$"} ${booking.totalPrice}</li>
+                </ul>
+                <p>We look forward to welcoming you!</p>
+                <p>If you need to make any changes, feel free to contact us.</p>
+            `
+        };
+
+        await transporter.sendMail(mailOptions);
 
         return NextResponse.json({ success: true, message: "Booking created successfully" });
 

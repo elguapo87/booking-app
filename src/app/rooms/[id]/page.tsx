@@ -8,13 +8,15 @@ import Image, { StaticImageData } from "next/image";
 import StarRating from "@/components/StarRating";
 import { AppContext } from "@/context/AppContext";
 import toast from "react-hot-toast";
-import { Span } from "next/dist/trace";
+import { useClerk } from "@clerk/nextjs";
 
 const RoomDetails = () => {
 
     const context = useContext(AppContext);
     if (!context) throw new Error("RoomDetails must be within AppContextProvider");
-    const { router, rooms, getToken, axios, currency } = context;
+    const { router, rooms, getToken, axios, currency, user } = context;
+
+    const { openSignIn } = useClerk();
 
     const { id } = useParams() as { id: string };
     const [room, setRoom] = useState<RoomType | null>(null);
@@ -62,6 +64,12 @@ const RoomDetails = () => {
         e.preventDefault();
 
         const token = await getToken();
+
+        if (!user) {
+            toast.error("Login to book");
+            setTimeout(() => openSignIn(), 1500);
+            return;
+        }
 
         try {
             if (!isAvaliable) {
