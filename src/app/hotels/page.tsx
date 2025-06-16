@@ -64,7 +64,7 @@ const HotelsPage = () => {
   }, []);
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-10 mx-4 md:mx-16 lg:mx-32 mt-20 md:mt-30 pb-20 md:pb-40">
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-10 mx-4 md:mx-16 lg:mx-32 mt-20 md:mt-30 md:pb-30">
       {hotels?.map((hotel) => (
         <AllHotels key={hotel._id} hotel={hotel} />
       ))}

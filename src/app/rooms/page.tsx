@@ -30,6 +30,7 @@ const AllRooms = () => {
     
     const searchParams = useSearchParams();
     const destination = searchParams.get("destination")?.toLowerCase() || "";
+    const hotelName = searchParams.get("hotelName")?.toLowerCase() || "";
 
     const context = useContext(AppContext);                                               
     if (!context) throw new Error("RoomListPage must be within AppContextProvider");
@@ -92,8 +93,12 @@ const AllRooms = () => {
             return destination === "" || room.hotel.city.toLowerCase().includes(destination);
         };
 
+        const matchesHotelName = (room: RoomType) => {
+            return hotelName === "" || room.hotel.name.toLowerCase().includes(hotelName);
+        };
+
         let newFilteredRooms = rooms.filter(
-            (room) => matchesRoomTypes(room) &&  matchesPriceRange(room) && matchesDestination(room)
+            (room) => matchesRoomTypes(room) &&  matchesPriceRange(room) && matchesDestination(room) && matchesHotelName(room)
         );
 
         if (sortByFilter === "Price Low to High") {
@@ -117,7 +122,7 @@ const AllRooms = () => {
     };
 
     return (
-        <div className='flex flex-col-reverse lg:flex-row items-start justify-between pt-28 md:pt-35 px-4 md:px-16 lg:px-24 xl:px-32'>
+        <div className='flex flex-col-reverse lg:flex-row items-start justify-between pt-28 md:pt-35 px-4 md:px-16 lg:px-24 xl:px-32 md:pb-30'>
             {/* LEFT SIDE */}
             <div>
                 <div className="flex flex-col items-start text-left">
@@ -126,8 +131,8 @@ const AllRooms = () => {
                 </div>
 
                 {filteredRooms.map((room) => (
-                    <div key={room._id} className="flex flex-col md:flex-row items-start py-10 gap-6 border-b border-gray-300 last:pb-30 last:border-0">
-                        <Image onClick={() => { router.push(`/rooms/${room._id}`); scrollTo(0, 0) }} src={room.images[0]} width={500} height={500} alt="Hotel-Image" title="View Room Details" className="max-h-65 md:w-1/2 rounded-xl shadow-lg object-cover cursor-pointer" />
+                    <div key={room._id} className="flex flex-col md:flex-row items-start py-10 gap-6 border-b border-gray-300 last:border-0">
+                        <Image onClick={() => { router.push(`/rooms/${room._id}`); scrollTo(0, 0) }} src={room.images[0]} width={500} height={500} alt="Hotel-Image" title="View Room Details" className="aspect-[2/1] max-h-65 md:w-1/2 rounded-xl shadow-lg object-cover cursor-pointer" />
 
                         <div className="md:w-1/2 flex flex-col gap-2">
                             <p className="text-gray-500">{room.hotel.city}</p>

@@ -32,9 +32,26 @@ const Navbar = () => {
     const [isScrolled, setIsScrolled] = useState(false);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
 
+    const [destination, setDestionation] = useState("");
+    const [hotelName, setHotelName] = useState("");
+    const [searchType, setSearchType] = useState<'destination' | 'hotelName'>("destination")
+    const [openSearch, setOpenSearch] = useState(false);
+
     const { openSignIn } = useClerk();
 
     const pathName = usePathname();
+
+    const onSearch = () => {
+        if (destination && hotelName) {
+            router.push(`/rooms/?destination=${destination}&hotelName=${hotelName}`);
+
+        } else if (destination) {
+            router.push(`/rooms/?destination=${destination}`);
+            
+        } else if (hotelName) {
+            router.push(`/rooms/?hotelName=${hotelName}`);
+        }
+    };
 
     useEffect(() => {
         const handleScroll = () => {
@@ -51,8 +68,21 @@ const Navbar = () => {
         return () => window.removeEventListener("scroll", handleScroll);
     }, [pathName]);
 
-    return (
+    useEffect(() => {
+        if (isMenuOpen) {
+            document.body.style.overflow = "hidden";
 
+        } else {
+            document.body.style.overflow = "";
+        }
+
+        return () => {
+            document.body.style.overflow = "";
+        }
+
+    }, [isMenuOpen]);
+
+    return (
         <nav className={`fixed top-0 left-0 w-full flex items-center justify-between px-4 md:px-16 lg:px-24 xl:px-32 transition-all duration-500 z-50 ${isScrolled ? "bg-stone-100 shadow-md text-gray-700 backdrop-blur-lg py-3 md:py-4" : "py-4 md:py-6"}`}>
             {/* Logo */}
             <Link href="/">
@@ -78,8 +108,63 @@ const Navbar = () => {
             </div>
 
             {/* Desktop Right */}
-            <div className="hidden md:flex items-center gap-4">
-                <Image src={assets.searchIcon} alt="Search" className={`${isScrolled && "invert"} h-7 transition-all duration-500`} />
+            <div className="hidden md:flex items-center gap-2">
+                <div className="flex items-center gap-2">
+                    {
+                        openSearch ? (
+                        <>
+                            {/* Close button on the left */}
+                            <div onClick={() => setOpenSearch(false)} className={`font-bold cursor-pointer ${isScrolled ? "text-gray-800" : "text-stone-50"}`}>
+                                X
+                            </div>
+
+                            {/* Search bar and select */}
+                            <div className="flex items-center">
+                            <select 
+                                value={searchType} 
+                                onChange={(e) => setSearchType(e.target.value as 'destination' | 'hotelName')}
+                                className={`text-sm rounded px-1 py-0.5 border outline-none ${isScrolled ? "border-gray-800 text-gray-800" : "border-stone-50 text-stone-50"}`}
+                            >
+                                <option value="destination" className="text-gray-800">Destination</option>
+                                <option value="hotelName" className="text-gray-800">Hotel Name</option>
+                            </select>
+
+                            <input
+                                onChange={(e) => {
+                                if (searchType === 'destination') {
+                                    setDestionation(e.target.value);
+                                    setHotelName('');
+                                } else {
+                                    setHotelName(e.target.value);
+                                    setDestionation('');
+                                }
+                                }}
+                                value={searchType === 'destination' ? destination : hotelName}
+                                onKeyDown={(e) => e.key === "Enter" && onSearch()}
+                                placeholder={searchType === "destination" ? "Search destination..." : "Search hotel..."}
+                                className={`px-2 border-none outline-none ml-3 ${isScrolled ? "text-gray-800 placeholder:text-gray-400" : "text-stone-50 placeholder:text-stone-50"}`}
+                            />
+                            </div>
+
+                            {/* Search icon on the right */}
+                            <Image 
+                            onClick={onSearch} 
+                            src={assets.searchIcon} 
+                            alt="Search" 
+                            className={`h-7 cursor-pointer mr-3 ${isScrolled && "invert"}`} 
+                            />
+                        </>
+                        ) : (
+                        <Image 
+                            onClick={() => setOpenSearch(true)} 
+                            src={assets.searchIcon} 
+                            alt="Search" 
+                            className={`h-7 cursor-pointer ${isScrolled && "invert"}`} 
+                        />
+                        )
+                    }
+                </div>
+
 
                 {
                     user
@@ -113,6 +198,69 @@ const Navbar = () => {
 
             {/* Mobile Menu */}
             <div className={`fixed top-0 left-0 w-full h-screen bg-white text-base flex flex-col md:hidden items-center justify-center gap-6 font-medium text-gray-800 transition-all duration-500 ${isMenuOpen ? "translate-x-0" : "-translate-x-full"}`}>
+                <div className="absolute top-4 left-4">
+                    <div className="flex flex-col items-start gap-2">
+                    {
+                        openSearch ? (
+                        <>
+                            {/* Close button on the left */}
+                            <div onClick={() => setOpenSearch(false)} className={`font-bold cursor-pointer ${isScrolled ? "text-gray-800" : "text-stone-50"}`}>
+                                X
+                            </div>
+
+                            {/* Search bar and select */}
+                            <div className="flex items-center">
+                                <select 
+                                    value={searchType} 
+                                    onChange={(e) => setSearchType(e.target.value as 'destination' | 'hotelName')}
+                                    className={`text-xs rounded px-1 py-0.5 border outline-none ${isScrolled ? "border-gray-800 text-gray-800" : "border-stone-50 text-stone-50"}`}
+                                >
+                                    <option value="destination" className="text-gray-800">Destination</option>
+                                    <option value="hotelName" className="text-gray-800">Hotel Name</option>
+                                </select>
+
+                                <input
+                                    onChange={(e) => {
+                                    if (searchType === 'destination') {
+                                        setDestionation(e.target.value);
+                                        setHotelName('');
+                                    } else {
+                                        setHotelName(e.target.value);
+                                        setDestionation('');
+                                    }
+                                    }}
+                                    value={searchType === 'destination' ? destination : hotelName}
+                                    onKeyDown={(e) => {
+                                        if (e.key === "Enter") {
+                                            onSearch();
+                                            setIsMenuOpen(false);
+                                        }
+                                    }}
+                                    placeholder={searchType === "destination" ? "Search destination..." : "Search hotel..."}
+                                    className={`px-2 border-none outline-none max-w-1/2 text-sm ${isScrolled ? "text-gray-800 placeholder:text-gray-400" : "text-stone-50 placeholder:text-stone-50"}`}
+                                />
+                                {/* Search icon on the right */}
+                                <Image 
+                                    onClick={() => { onSearch(); setIsMenuOpen(false) }} 
+                                    src={assets.searchIcon} 
+                                    alt="Search" 
+                                    className={`h-7 cursor-pointer mr-3 ${isScrolled && "invert"}`} 
+                                />
+                            </div>
+
+                        </>
+                        ) : (
+                        <Image 
+                            onClick={() => setOpenSearch(true)} 
+                            src={assets.searchIcon} 
+                            alt="Search" 
+                            className={`h-7 cursor-pointer ${isScrolled && "invert"}`} 
+                        />
+                        )
+                    }
+                </div>
+                </div>
+
                 <button className="absolute top-4 right-4" onClick={() => setIsMenuOpen(false)}>
                     <Image src={assets.closeIcon} alt="close-menu" className="h-6.5" />
                 </button>

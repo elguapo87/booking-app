@@ -141,14 +141,14 @@ const HotelDetailsPage = () => {
     };
 
     return (
-        <div className='flex flex-col-reverse lg:flex-row items-start justify-between pt-28 md:pt-35 px-4 md:px-16 lg:px-24 xl:px-32'>
+        <div className='flex flex-col-reverse lg:flex-row items-start justify-between pt-28 md:pt-35 px-4 md:px-16 lg:px-24 xl:px-32 md:pb-30'>
             {/* LEFT SIDE */}
             <div>
                 <h1 className="font-playfair text-4xl md:text-[40px]">{hotel.name} Rooms</h1>
 
                 {filteredRooms?.map((room) => (
                     <div key={room._id} className="flex flex-col md:flex-row items-start py-10 gap-6 border-b border-gray-300 last:border-0">
-                        <Image onClick={() => { router.push(`/rooms/${room._id}`); scrollTo(0, 0) }} src={room.images[0]} alt="Hotel-Image" width={500} height={500} title="View Room Details" className="max-h-65 md:w-1/2 rounded-xl shadow-lg object-cover cursor-pointer" />
+                        <Image onClick={() => { router.push(`/rooms/${room._id}`); scrollTo(0, 0) }} src={room.images[0]} alt="Hotel-Image" width={500} height={500} title="View Room Details" className="aspect-[2/1] max-h-65 md:w-1/2 rounded-xl shadow-lg object-cover cursor-pointer" />
 
                         <div className="md:w-1/2 flex flex-col gap-2">
                             <p className="text-gray-500">{room.hotel.city}</p>
