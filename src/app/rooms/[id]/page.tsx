@@ -1,23 +1,95 @@
 "use client"
 
 import { useParams } from "next/navigation"
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { assets, facilityIcons, roomCommonData, roomsDummyData } from "../../../../public/assets";
 import { RoomType } from "@/types";
 import Image, { StaticImageData } from "next/image";
 import StarRating from "@/components/StarRating";
+import { AppContext } from "@/context/AppContext";
+import toast from "react-hot-toast";
 
 const RoomDetails = () => {
+
+    const context = useContext(AppContext);
+    if (!context) throw new Error("RoomDetails must be within AppContextProvider");
+    const { router, rooms, getToken, axios, currency } = context;
 
     const { id } = useParams() as { id: string };
     const [room, setRoom] = useState<RoomType | null>(null);
     const [mainImage, setMainImage] = useState<string | StaticImageData | null>(null);
 
+    const [checkInDate, setCheckInDate] = useState<string | null>(null);
+    const [checkOutDate, setCheckOutDate] = useState<string | null>(null);
+    const [guests, setGuests] = useState(1);
+    const [isAvaliable, setIsAvailable] = useState(false);
+
+    const checkAvailability = async () => {
+        try {
+            // Check if check-in-date is greater then check-out-date
+            if ((checkInDate && checkOutDate) && (checkInDate >= checkOutDate)) {
+                toast.error("Check-in date should be less then check-out date");
+                return;
+            }
+
+            const { data } = await axios.post("/api/booking/checkAvailability", { checkInDate, checkOutDate, room: id });
+
+            if (data.success) {
+                if (data.isAvailable) {
+                    setIsAvailable(true);
+                    toast.success("Room is avaliable");
+
+                } else {
+                    setIsAvailable(false);
+                    toast.error("Room is not avaliable")
+                }
+
+            } else {
+                toast.error(data.message);
+            }
+
+        } catch (error) {
+            const errMessage = error instanceof Error ? error.message : "An unknown error occurred";
+            toast.error(errMessage);
+        }
+    };
+
+    // onSubmitHandler function to check availability & book the room
+    const onSubmitHandler = async (e: { preventDefault: () => void; }) => {
+        e.preventDefault();
+
+        const token = await getToken();
+
+        try {
+            if (!isAvaliable) {
+                return checkAvailability();
+
+            } else {
+                const { data } = await axios.post("/api/booking/book", { room: id, checkInDate, checkOutDate, guests, paymentMethod: "Pay At Hotel" }, {
+                    headers: { Authorization: `Bearer ${token}` }
+                });
+
+                if (data.success) {
+                    toast.success(data.message);
+                    router.push("/myBookings");
+                    scrollTo(0, 0);
+                     
+                } else {
+                    toast.error(data.message);
+                }
+            }
+
+        } catch (error) {
+            const errMessage = error instanceof Error ? error.message : "An unknown error occurred";
+            toast.error(errMessage);
+        }
+    };
+
     useEffect(() => {
-        const room = roomsDummyData.find((room) => room._id === id);
+        const room = rooms.find((room) => room._id === id);
         room && setRoom(room);
         room && setMainImage(room.images[0]);
-    }, []);
+    }, [rooms]);
 
     return room && (
         <div className='py-28 md:py-35 px-4 md:px-16 lg:px-24 xl:px-32'>
@@ -74,33 +146,35 @@ const RoomDetails = () => {
                 </div>
 
                 {/* ROOM PRICE */}
-                <p className='text-2xl font-medium'>${room.pricePerNight}/night</p>
+                <p className='text-2xl font-medium'>{currency}{room.pricePerNight}/night</p>
             </div>
 
             {/* CHECKIN CHECKOUT FORM */}
-            <form className='flex flex-col md:flex-row items-start md:items-center justify-between bg-white shadow-[0px_0px_20px_rgba(0,0,0,0.15)] p-6 rounded-xl mx-auto mt-16 max-w-6xl'>
+            <form onSubmit={onSubmitHandler} className='flex flex-col md:flex-row items-start md:items-center justify-between bg-white shadow-[0px_0px_20px_rgba(0,0,0,0.15)] p-6 rounded-xl mx-auto mt-16 max-w-6xl'>
                 <div className='flex flex-col flex-wrap md:flex-row items-start md:items-center gap-4 md:gap-10 text-gray-500'>
                     <div className='flex flex-col'>
                         <label htmlFor="checkInDate" className='font-medium'>Check-In</label>
-                        <input type="date" id='checkInDate' placeholder='Check-In' className='w-full rounded border border-gray-300 px-3 py-2 mt-1.5 outline-none' required />
+                        <input onChange={(e) => setCheckInDate(e.target.value)} min={new Date().toISOString().split("T")[0]} type="date" id='checkInDate' placeholder='Check-In' className='w-full rounded border border-gray-300 px-3 py-2 mt-1.5 outline-none' required />
                     </div>
 
                     <div className='w-px h-15 bg-gray-300/70 max-md:hidden'></div>
 
                     <div className='flex flex-col'>
                         <label htmlFor="checkOutDate" className='font-medium'>Check-Out</label>
-                        <input type="date" id='checkOutDate' placeholder='Check-Out' className='w-full rounded border border-gray-300 px-3 py-2 mt-1.5 outline-none' required />
+                        <input onChange={(e) => setCheckOutDate(e.target.value)} min={checkInDate ?? ""} disabled={!checkInDate} type="date" id='checkOutDate' placeholder='Check-Out' className='w-full rounded border border-gray-300 px-3 py-2 mt-1.5 outline-none' required />
                     </div>
 
                     <div className='w-px h-15 bg-gray-300/70 max-md:hidden'></div>
 
                     <div className='flex flex-col'>
                         <label htmlFor="guests" className='font-medium'>Guests</label>
-                        <input type="number" id='guests' placeholder='0' className='max-w-20 rounded border border-gray-300 px-3 py-2 mt-1.5 outline-none' required />
+                        <input type="number" id='guests' placeholder='1' className='max-w-20 rounded border border-gray-300 px-3 py-2 mt-1.5 outline-none' required />
                     </div>
                 </div>
 
-                <button type='submit' className='bg-primary hover:bg-primary/80 active:scale-95 transition-all text-white rounded-md max-md:w-full max-md:mt-6 md:px-25 py-3 md:py-4 text-base cursor-pointer'>Check Availability</button>
+                <button type='submit' className='bg-primary hover:bg-primary/80 active:scale-95 transition-all text-white rounded-md max-md:w-full max-md:mt-6 md:px-25 py-3 md:py-4 text-base cursor-pointer'>
+                    {isAvaliable ? "Book Now" : "Check Availability"}
+                </button>
             </form>
 
             {/* COMMON SPECIFICATIONS */}
@@ -117,7 +191,7 @@ const RoomDetails = () => {
                 ))}
             </div>
 
-            <div className='mex-w-3xl border-y border-gray-300 my-15 py-10 text-gray-500'> 
+            <div className='mex-w-3xl border-y border-gray-300 my-15 py-10 text-gray-500'>
                 <p>
                     Guests will be allocated on the ground floor according to availability. You get a comfortable
                     Two bedroom apartment has a true city feeling. The price quoted is for two guests, at the guest
