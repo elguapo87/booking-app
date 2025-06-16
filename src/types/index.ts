@@ -59,8 +59,8 @@ export type TitleProps = {
 export type CheckBoxProps = {
     label: string;
     selected?: boolean;
-    onChange?: (checked: boolean, label: string) => void; 
-} 
+    onChange?: (checked: boolean, label: string) => void;
+}
 
 // Radio button props types
 export type RadioBtnProps = {
@@ -90,4 +90,23 @@ export interface BookingData {
     totalBookings: number;
     totalRevenue: number;
     bookings: Booking[];
+};
+
+
+// User booking types
+export type UserBookingsType = {
+    _id: string;
+    user: UserType;
+    room: RoomType;
+    hotel: HotelType;
+    checkInDate: Date;
+    checkOutDate: Date;
+    totalPrice: number;
+    guests: number;
+    status: string;
+    paymentMethod: string;
+    isPaid: boolean;
+    createdAt: Date;
+    updatedAt: Date;
+    __v?: number;
 };
