@@ -1,6 +1,6 @@
 "use client"
 
-import { useContext, useEffect, useState } from "react"
+import { useCallback, useContext, useEffect, useState } from "react"
 
 import Title from "@/components/Title";
 import { AppContext } from "@/context/AppContext";
@@ -11,12 +11,12 @@ const RoomListPage = () => {
 
   const context = useContext(AppContext);
   if (!context) throw new Error("RoomListPage must be within AppContextProvider");
-  const { axios, getToken, user, currency , router } = context;
+  const { axios, getToken, user, currency, router } = context;
 
   const [rooms, setRooms] = useState<RoomType[] | null>([]);
 
-  // Fetch rooms of the hotel owner 
-  const fetchRooms = async () => {
+  // ✅ Wrap fetchRooms in useCallback so it can be used safely in useEffect
+  const fetchRooms = useCallback(async () => {
     try {
       const token = await getToken();
 
@@ -26,7 +26,6 @@ const RoomListPage = () => {
 
       if (data.success) {
         setRooms(data.ownerRooms);
-
       } else {
         toast.error(data.message);
       }
@@ -35,7 +34,7 @@ const RoomListPage = () => {
       const errMessage = error instanceof Error ? error.message : "An unknown error occurred";
       toast.error(errMessage);
     }
-  };
+  }, [axios, getToken]);
 
   // Toggle availability of the room
   const toggleAvailability = async (roomId: string) => {
@@ -44,7 +43,7 @@ const RoomListPage = () => {
 
       if (data.success) {
         toast.success(data.message);
-        await fetchRooms();
+        await fetchRooms(); // ✅ still works with useCallback
 
       } else {
         toast.error(data.message);
@@ -60,7 +59,7 @@ const RoomListPage = () => {
     if (user) {
       fetchRooms();
     }
-  }, [user]);
+  }, [user, fetchRooms]); // ✅ Warning gone
 
   return (
     <div>
@@ -93,18 +92,13 @@ const RoomListPage = () => {
                 <td className="py-3 px-4 border-t border-gray-300 text-sm text-red-500 text-center">
                   <div className="flex flex-col md:flex-row items-center gap-2">
                     <label className="relative inline-flex items-center cursor-pointer w-12 h-7">
-                      {/* Hidden Checkbox as Peer */}
                       <input
                         type="checkbox"
                         checked={item.isAvailable}
                         onChange={() => toggleAvailability(item._id)}
                         className="sr-only peer"
                       />
-
-                      {/* Background Track */}
                       <div className="w-full h-full bg-gray-300 rounded-full peer-checked:bg-blue-600 transition-colors duration-300"></div>
-
-                      {/* Toggle Knob */}
                       <div className="absolute top-1 left-1 w-5 h-5 bg-white rounded-full transition-transform duration-300 ease-in-out peer-checked:translate-x-5" />
                     </label>
 
@@ -122,6 +116,4 @@ const RoomListPage = () => {
   )
 }
 
-export default RoomListPage
-
-
+export default RoomListPage;
