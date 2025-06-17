@@ -41,7 +41,7 @@ const MyBookings = () => {
         const token = await getToken();
 
         try {
-            const { data } = await axios.post("/api/booking/stripe/stripePayment", { bookingId }, {
+            const { data } = await axios.post("/api/stripe/stripePayment", { bookingId }, {
                 headers: { Authorization: `Bearer ${token}` }
             });
 
