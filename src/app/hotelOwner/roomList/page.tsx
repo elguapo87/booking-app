@@ -11,7 +11,7 @@ const RoomListPage = () => {
 
   const context = useContext(AppContext);
   if (!context) throw new Error("RoomListPage must be within AppContextProvider");
-  const { axios, getToken, user, currency } = context;
+  const { axios, getToken, user, currency , router } = context;
 
   const [rooms, setRooms] = useState<RoomType[] | null>([]);
 
@@ -91,21 +91,27 @@ const RoomListPage = () => {
                 <td className="py-3 px-4 text-gray-700 border-t border-gray-300 max-sm:hidden">{item.amenities.join(", ")}</td>
                 <td className="py-3 px-4 text-gray-700 border-t border-gray-300">{currency} {item.pricePerNight}</td>
                 <td className="py-3 px-4 border-t border-gray-300 text-sm text-red-500 text-center">
-                  <label className="relative inline-flex items-center cursor-pointer w-12 h-7">
-                    {/* Hidden Checkbox as Peer */}
-                    <input
-                      type="checkbox"
-                      checked={item.isAvailable}
-                      onChange={() => toggleAvailability(item._id)}
-                      className="sr-only peer"
-                    />
+                  <div className="flex flex-col md:flex-row items-center gap-2">
+                    <label className="relative inline-flex items-center cursor-pointer w-12 h-7">
+                      {/* Hidden Checkbox as Peer */}
+                      <input
+                        type="checkbox"
+                        checked={item.isAvailable}
+                        onChange={() => toggleAvailability(item._id)}
+                        className="sr-only peer"
+                      />
 
-                    {/* Background Track */}
-                    <div className="w-full h-full bg-gray-300 rounded-full peer-checked:bg-blue-600 transition-colors duration-300"></div>
+                      {/* Background Track */}
+                      <div className="w-full h-full bg-gray-300 rounded-full peer-checked:bg-blue-600 transition-colors duration-300"></div>
 
-                    {/* Toggle Knob */}
-                    <div className="absolute top-1 left-1 w-5 h-5 bg-white rounded-full transition-transform duration-300 ease-in-out peer-checked:translate-x-5" />
-                  </label>
+                      {/* Toggle Knob */}
+                      <div className="absolute top-1 left-1 w-5 h-5 bg-white rounded-full transition-transform duration-300 ease-in-out peer-checked:translate-x-5" />
+                    </label>
+
+                    <button onClick={() => router.push(`/hotelOwner/updateRoom/${item._id}`)} className="border-none bg-blue-600 text-stone-50 px-2.5 py-[2px] md:px-3 md:py-[3px] rounded-xl uppercase text-xs md:text-sm cursor-pointer">
+                      Edit
+                    </button>
+                  </div>
                 </td>
               </tr>
             ))}

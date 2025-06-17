@@ -45,7 +45,7 @@ const Footer = () => {
 
             <hr className='border-gray-300 mt-8' />
             <div className='flex items-center justify-center max-md:text-sm  py-5'>
-                <p>© {new Date().getFullYear()} pg@dev. All rights reserved.</p>
+                <p>© {new Date().getFullYear()} @pgdev All rights reserved.</p>
             </div>
         </div>
     )
