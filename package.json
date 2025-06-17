@@ -18,6 +18,7 @@
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-hot-toast": "^2.5.2",
+    "stripe": "^18.2.1",
     "svix": "^1.67.0"
   },
   "devDependencies": {

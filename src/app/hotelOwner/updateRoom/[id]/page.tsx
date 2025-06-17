@@ -3,12 +3,10 @@
 import Title from "@/components/Title"
 import Image from "next/image";
 import { useContext, useEffect, useState } from "react"
-
 import toast from "react-hot-toast";
 import { AppContext } from "@/context/AppContext";
 import { assets } from "../../../../../public/assets";
 import { useParams } from "next/navigation";
-import { RoomType } from "@/types";
 
 type AmenityKey = "Free WiFi" | "Free Breakfast" | "Room Service" | "Mountain View" | "Pool Access";
 
@@ -22,7 +20,7 @@ const UpdateRoom = () => {
 
     const [loading, setLoading] = useState(false);
 
-    const [room, setRoom] = useState<RoomType | null>(null);
+    let updatedRooms = null
 
     const [images, setImages] = useState<{ [key: string]: File | null }>({
         "1": null,
@@ -108,7 +106,7 @@ const UpdateRoom = () => {
     useEffect(() => {
         const foundRoom = rooms.find((room) => room._id === id);
         if (foundRoom) {
-            setRoom(foundRoom);
+            updatedRooms = foundRoom;
 
             setInputs({
                 roomType: foundRoom.roomType,
