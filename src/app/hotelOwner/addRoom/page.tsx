@@ -57,15 +57,17 @@ const AddRoom = () => {
       const formData = new FormData();
       formData.append("roomType", inputs.roomType);
       formData.append("pricePerNight", inputs.pricePerNight.toString());
-      
+
       // Converting amenities to array & keeping only enabled amenities
       const amenities = (Object.keys(inputs.amenities) as AmenityKey[]).filter((key) => inputs.amenities[key]);
       formData.append("amenities", JSON.stringify(amenities));
 
       // Adding images to form data
       Object.keys(images).forEach((key) => {
-        images[key] && formData.append("images", images[key]);
-      })
+        if (images[key]) {
+          formData.append("images", images[key]!);
+        }
+      });
 
       const { data } = await axios.post("/api/hotel/addRoom", formData, {
         headers: { Authorization: `Bearer ${token}` }
@@ -97,8 +99,8 @@ const AddRoom = () => {
       }
 
     } catch (error) {
-        const errMessage = error instanceof Error ? error.message : "An unknown error occurred";
-        toast.error(errMessage);
+      const errMessage = error instanceof Error ? error.message : "An unknown error occurred";
+      toast.error(errMessage);
 
     } finally {
       setLoading(false);
@@ -107,11 +109,11 @@ const AddRoom = () => {
 
   return (
     <form onSubmit={onSubmitHandler}>
-      <Title 
-        title="Add Room" 
+      <Title
+        title="Add Room"
         subTitle="Fill in the details carefully and accurate room details, pricing, and amenities,
-                  to enhance user booking experience" 
-        align="left" 
+                  to enhance user booking experience"
+        align="left"
         font="outfit"
       />
 
@@ -120,7 +122,7 @@ const AddRoom = () => {
       <div className="grid grid-cols-2 sm:flex gap-4 my-2 flex-wrap">
         {Object.keys(images).map((key) => (
           <label key={key} htmlFor={`roomImage${key}`}>
-            <Image 
+            <Image
               src={images[key] ? URL.createObjectURL(images[key]) : assets.uploadArea}
               alt=""
               width={100}
@@ -128,7 +130,7 @@ const AddRoom = () => {
               className="max-h-13 cursor-pointer opacity-80"
             />
             <input type="file"
-            onChange={(e) => setImages({ ...images, [key]: e.target.files && e.target.files[0] ? e.target.files[0] : null })}
+              onChange={(e) => setImages({ ...images, [key]: e.target.files && e.target.files[0] ? e.target.files[0] : null })}
               accept="image/*"
               id={`roomImage${key}`}
               hidden
@@ -151,7 +153,7 @@ const AddRoom = () => {
 
         <div>
           <p className="mt-4 text-gray-800">Price <span className="text-xs">/Per Night</span></p>
-          <input onChange={(e) => setInputs({ ...inputs, pricePerNight: Number(e.target.value) })} value={inputs.pricePerNight}  type="number" placeholder="0" className="border border-gray-300 mt-1 rounded p-2 w-24" />
+          <input onChange={(e) => setInputs({ ...inputs, pricePerNight: Number(e.target.value) })} value={inputs.pricePerNight} type="number" placeholder="0" className="border border-gray-300 mt-1 rounded p-2 w-24" />
         </div>
       </div>
 
@@ -159,7 +161,7 @@ const AddRoom = () => {
       <div className="flex flex-col flex-wrap mt-1 text-gray-600 max-w-sm">
         {Object.keys(inputs.amenities).map((amenity, index) => (
           <div key={index}>
-            <input onChange={(e) => setInputs({ ...inputs, amenities: { ...inputs.amenities, [amenity as AmenityKey]: !inputs.amenities[amenity as AmenityKey] } })} type="checkbox" id={`amenities ${index + 1}`} checked={inputs.amenities[amenity as AmenityKey]} />
+            <input onChange={() => setInputs({ ...inputs, amenities: { ...inputs.amenities, [amenity as AmenityKey]: !inputs.amenities[amenity as AmenityKey] } })} type="checkbox" id={`amenities ${index + 1}`} checked={inputs.amenities[amenity as AmenityKey]} />
             <label htmlFor={`amenities ${index + 1}`}> {amenity}</label>
           </div>
         ))}
