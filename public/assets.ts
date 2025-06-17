@@ -40,6 +40,9 @@ import uploadArea from "./uploadArea.svg";
 import totalBookingIcon from "./totalBookingIcon.svg";
 import totalRevenueIcon from "./totalRevenueIcon.svg";
 import phone_icon from "./telephone.png";
+import handshake from "./handshake.png";
+import hand_gear from "./hand_gear.png";
+import low_price from "./low-price.png";
 
 
 export const assets = {
@@ -77,7 +80,10 @@ export const assets = {
     uploadArea,
     totalBookingIcon,
     totalRevenueIcon,
-    phone_icon
+    phone_icon,
+    handshake,
+    hand_gear,
+    low_price
 }
 
 export const cities = [
