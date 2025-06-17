@@ -16,7 +16,7 @@ export default function HotelOwnerLayout ({ children }: { children: React.ReactN
         if (!isOwner) {
             router.push("/");
         }
-    }, [isOwner]);
+    }, [isOwner, router]);
 
     return (
         <>
