@@ -15,33 +15,31 @@ const DashboardPage = () => {
   const { axios, getToken, user, currency } = context;
 
   const [dashboardData, setDashboardData] = useState<BookingData | null>(null);
-  
-  const fetchDashboardData = async () => {
-    try {
-      const token = await getToken();
-
-      const { data } = await axios.get("/api/booking/getOwnerBookings", {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-
-      if (data.success) {
-        setDashboardData(data.dashboardData);
-
-      } else {
-        toast.error(data.message);
-      }
-
-    } catch (error) {
-        const errMessage = error instanceof Error ? error.message : "An unknown error occurred";
-        toast.error(errMessage);
-    }
-  };
 
   useEffect(() => {
-    if (user) {
-      fetchDashboardData();
-    }
-  }, [user]);
+    if (!user) return;
+
+    const fetchDashboardData = async () => {
+      try {
+        const token = await getToken();
+        const { data } = await axios.get("/api/booking/getOwnerBookings", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+
+        if (data.success) {
+          setDashboardData(data.dashboardData);
+        } else {
+          toast.error(data.message);
+        }
+      } catch (error) {
+        const errMessage =
+          error instanceof Error ? error.message : "An unknown error occurred";
+        toast.error(errMessage);
+      }
+    };
+
+    fetchDashboardData();
+  }, [user, axios, getToken]);
 
   return (
     <div>
