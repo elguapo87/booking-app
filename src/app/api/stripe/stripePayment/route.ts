@@ -52,6 +52,7 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ success: true, url: session.url });
 
     } catch (error) {
+        console.error("Stripe Payment error:", error);
         return NextResponse.json({ success: false, message: "Payment Failed" });
     }
 };
