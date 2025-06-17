@@ -1,7 +1,6 @@
 "use client"
 
 import React, { useContext } from 'react'
-import { roomsDummyData } from '../../public/assets'
 import HotelCard from './HotelCard'
 import Title from './Title'
 import { AppContext } from '@/context/AppContext'

@@ -1,7 +1,7 @@
 "use client"
 
 import React, { useContext, useEffect, useState } from 'react'
-import { assets, dashboardDummyData } from '../../../public/assets';
+import { assets } from '../../../public/assets';
 import Title from '@/components/Title';
 import Image from 'next/image';
 import { AppContext } from '@/context/AppContext';

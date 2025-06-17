@@ -10,7 +10,7 @@ const RecommendedHotels = () => {
 
     const context = useContext(AppContext);
     if (!context) throw new Error("RecommendedHotels must be within AppContextProvider");
-    const { rooms, router, searchedCities } = context;
+    const { rooms, searchedCities } = context;
 
     const [recommended, setRecommended] = useState<RoomType[]>([]);
 

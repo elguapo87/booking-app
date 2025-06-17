@@ -1,9 +1,9 @@
 "use client"
 
 import React, { useContext, useEffect, useState } from 'react'
-import { assets, facilityIcons, roomsDummyData } from '../../../public/assets'
+import { assets, facilityIcons } from '../../../public/assets'
 import Image from 'next/image';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 import StarRating from '@/components/StarRating';
 import { CheckBoxProps, RadioBtnProps, RoomType  } from '@/types';
 import { AppContext } from '@/context/AppContext';

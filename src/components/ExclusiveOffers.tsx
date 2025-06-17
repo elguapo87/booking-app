@@ -1,9 +1,17 @@
-import React from 'react'
+"use client"
+
+import React, { useContext } from 'react'
 import Title from './Title'
 import Image from 'next/image'
 import { assets, exclusiveOffers } from '../../public/assets'
+import { AppContext } from '@/context/AppContext'
 
 const ExclusiveOffers = () => {
+
+    const context = useContext(AppContext);
+    if (!context) throw new Error("ExclusiveOffers must be within AppContextProvider");
+    const { router } = context;
+
     return (
         <div className="flex flex-col items-center px-6 md:px-16 lg:px-24 xl:px-32 pt-20 pb-30">
             <div className="flex flex-col md:flex-row items-center justify-between w-full">
@@ -12,7 +20,7 @@ const ExclusiveOffers = () => {
                     subTitle="Take advantage of our limited-time offers and special packages to enchance your stay and create unforgettable memories."
                     align="left"
                 />
-                <button className="group flex items-center gap-2 font-medium cursor-pointer max-md:mt-12">
+                <button onClick={() => router.push("/rooms")} className="group flex items-center gap-2 font-medium cursor-pointer max-md:mt-12">
                     View All Offers
                     <Image src={assets.arrowIcon} alt="Arrow-Icon" className="group-hover:translate-x-1 transition-all" />
                 </button>
