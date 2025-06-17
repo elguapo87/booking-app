@@ -26,6 +26,7 @@ export async function GET() {
         return NextResponse.json({ success: true, dashboardData: { totalBookings, totalRevenue, bookings } });
 
     } catch (error) {
-        return NextResponse.json({ success: false, message: "Failed to fetch bookins" });
+        console.error("Get Owner Bookings Error:", error);
+        return NextResponse.json({ success: false, message: "Failed to fetch bookings" });
     }
 };
