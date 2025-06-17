@@ -29,7 +29,7 @@ export async function POST(req: NextRequest) {
         const existingImages = formData.getAll("existingImages") as string[];
         const newImages = formData.getAll("images") as File[];
 
-        let imageUrls = [...existingImages];
+        const imageUrls = [...existingImages];
 
         if (newImages.length > 0) {
             if (newImages.length + existingImages.length > 4) {
