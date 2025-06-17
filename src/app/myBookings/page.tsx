@@ -37,6 +37,27 @@ const MyBookings = () => {
         }
     };
 
+    const handlePayment = async (bookingId: string) => {
+        const token = await getToken();
+
+        try {
+            const { data } = await axios.post("/api/booking/stripe/stripePayment", { bookingId }, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+
+            if (data.success) {
+                window.location.href = data.url;
+
+            } else {
+                toast.error(data.message);
+            }
+
+        } catch (error) {
+            const errMessage = error instanceof Error ? error.message : "An unknown error occurred";
+            toast.error(errMessage);
+        }
+    };
+
     useEffect(() => {
         if (user) {
             fetchUserBookings();
@@ -103,7 +124,7 @@ const MyBookings = () => {
                             </div>
 
                             {!booking.isPaid && (
-                                <button className='px-4 py-1.5 mt-4 text-xs border border-gray-400 rounded-full hover:bg-gray-50 transition-all cursor-pointer'>Pay Now</button>
+                                <button onClick={() => handlePayment(booking._id)} className='px-4 py-1.5 mt-4 text-xs border border-gray-400 rounded-full hover:bg-gray-50 transition-all cursor-pointer'>Pay Now</button>
                             )}
                         </div>
                     </div>
