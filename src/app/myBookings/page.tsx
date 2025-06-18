@@ -10,32 +10,11 @@ import { UserBookingsType } from '@/types';
 
 const MyBookings = () => {
 
-    const context = useContext(AppContext);                                                 
+    const context = useContext(AppContext);
     if (!context) throw new Error("MyBookingsPage must be within AppContextProvider");
     const { user, getToken, axios } = context;
 
     const [bookings, setBookings] = useState<UserBookingsType[]>([]);
-
-    const fetchUserBookings = async () => {
-        const token = await getToken();
-
-        try {
-            const { data } = await axios.get("/api/booking/getUserBookings", {
-                headers: { Authorization: `Bearer ${token}` }
-            });
-
-            if (data.success) {
-                setBookings(data.bookings);
-                
-            } else {
-                toast.error(data.message);
-            }
-
-        } catch (error) {
-            const errMessage = error instanceof Error ? error.message : "An unknown error occurred";
-            toast.error(errMessage);
-        }
-    };
 
     const handlePayment = async (bookingId: string) => {
         const token = await getToken();
@@ -60,9 +39,29 @@ const MyBookings = () => {
 
     useEffect(() => {
         if (user) {
+            const fetchUserBookings = async () => {
+                const token = await getToken();
+
+                try {
+                    const { data } = await axios.get("/api/booking/getUserBookings", {
+                        headers: { Authorization: `Bearer ${token}` }
+                    });
+
+                    if (data.success) {
+                        setBookings(data.bookings);
+                    } else {
+                        toast.error(data.message);
+                    }
+                } catch (error) {
+                    const errMessage = error instanceof Error ? error.message : "An unknown error occurred";
+                    toast.error(errMessage);
+                }
+            };
+
             fetchUserBookings();
         }
-    }, [user]);
+    }, [user, getToken, axios]);
+
 
 
     return (
