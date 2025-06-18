@@ -6,6 +6,8 @@ import { useContext, useState } from "react"
 import { assets } from "../../../../public/assets";
 import toast from "react-hot-toast";
 import { AppContext } from "@/context/AppContext";
+import imageCompression from 'browser-image-compression';
+
 
 type AmenityKey = "Free WiFi" | "Free Breakfast" | "Room Service" | "Mountain View" | "Pool Access";
 
@@ -40,6 +42,35 @@ const AddRoom = () => {
 
   const [loading, setLoading] = useState(false);
 
+  const handleImageSelect = async (file: File, key: string) => {
+    try {
+      const compressed = await imageCompression(file, {
+        maxSizeMB: 0.5,     // limit to 0.5 MB
+        maxWidthOrHeight: 1024,
+        useWebWorker: true,
+      });
+
+      setImages(prev => ({ ...prev, [key]: compressed }));
+
+    } catch (error) {
+      console.error("Image compression failed:", error);
+    }
+  };
+
+  const uploadToCloudinary = async (file: File): Promise<string> => {
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("upload_preset", "hotel_booking"); // 🔁 Replace with your preset
+
+    const res = await fetch("https://api.cloudinary.com/v1_1/duhsxvy7n/image/upload", {
+      method: "POST",
+      body: formData,
+    });
+
+    const data = await res.json();
+    return data.secure_url;
+  };
+
   const onSubmitHandler = async (e: { preventDefault: () => void; }) => {
     e.preventDefault();
 
@@ -54,23 +85,28 @@ const AddRoom = () => {
     try {
       const token = await getToken();
 
-      const formData = new FormData();
-      formData.append("roomType", inputs.roomType);
-      formData.append("pricePerNight", inputs.pricePerNight.toString());
+      const amenities = (Object.keys(inputs.amenities) as AmenityKey[])
+        .filter((key) => inputs.amenities[key]);
 
-      // Converting amenities to array & keeping only enabled amenities
-      const amenities = (Object.keys(inputs.amenities) as AmenityKey[]).filter((key) => inputs.amenities[key]);
-      formData.append("amenities", JSON.stringify(amenities));
+      const imageUrls: string[] = [];
 
-      // Adding images to form data
-      Object.keys(images).forEach((key) => {
-        if (images[key]) {
-          formData.append("images", images[key]!);
+      for (const key of Object.keys(images)) {
+        const file = images[key];
+        if (file) {
+          const url = await uploadToCloudinary(file);
+          imageUrls.push(url);
         }
-      });
+      }
 
-      const { data } = await axios.post("/api/hotel/addRoom", formData, {
-        headers: { Authorization: `Bearer ${token}` }
+      const { data } = await axios.post("/api/hotel/addRoom", {
+        roomType: inputs.roomType,
+        pricePerNight: inputs.pricePerNight,
+        amenities,
+        images: imageUrls
+      }, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
       });
 
       if (data.success) {
@@ -129,12 +165,17 @@ const AddRoom = () => {
               height={100}
               className="max-h-13 cursor-pointer opacity-80"
             />
-            <input type="file"
-              onChange={(e) => setImages({ ...images, [key]: e.target.files && e.target.files[0] ? e.target.files[0] : null })}
+            <input
+              type="file"
               accept="image/*"
               id={`roomImage${key}`}
               hidden
+              onChange={(e) => {
+                const file = e.target.files?.[0];
+                if (file) handleImageSelect(file, key);
+              }}
             />
+
           </label>
         ))}
       </div>
