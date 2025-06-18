@@ -70,7 +70,9 @@ const UpdateRoom = () => {
 
             // Adding images to form data
             Object.keys(images).forEach((key) => {
-                images[key] && formData.append("images", images[key]);
+                if (images[key]) {
+                    formData.append("images", images[key]!);
+                }
             });
 
             Object.keys(previewImages).forEach((key) => {
