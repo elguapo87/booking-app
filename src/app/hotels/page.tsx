@@ -30,38 +30,36 @@ const HotelsPage = () => {
 
   const [hotels, setHotels] = useState<AllHotelsData[] | null>(null);
 
-  const fetchData = async () => {
-    try {
-      const [hotelRes, roomRes] = await Promise.all([
-        axios.get("/api/hotel/getAllHotels"),
-        axios.get("/api/hotel/getAllRooms"),
-      ]);
-
-      if (hotelRes.data.success && roomRes.data.success) {
-        const allHotels = hotelRes.data.hotels;
-        const allRooms = roomRes.data.rooms;
-
-        // Attach rooms to each hotel
-        const hotelsWithRooms = allHotels.map((hotel: AllHotelsData) => ({
-          ...hotel,
-          rooms: allRooms.filter((room: RoomType) => room.hotel._id === hotel._id)
-        }));
-
-        setHotels(hotelsWithRooms);
-
-      } else {
-        toast.error("Failed to fetch hotels or rooms");
-      }
-
-    } catch (error) {
-      const errMessage = error instanceof Error ? error.message : "An unknown error occurred";
-      toast.error(errMessage);
-    }
-  };
-
   useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [hotelRes, roomRes] = await Promise.all([
+          axios.get("/api/hotel/getAllHotels"),
+          axios.get("/api/hotel/getAllRooms"),
+        ]);
+
+        if (hotelRes.data.success && roomRes.data.success) {
+          const allHotels = hotelRes.data.hotels;
+          const allRooms = roomRes.data.rooms;
+
+          const hotelsWithRooms = allHotels.map((hotel: AllHotelsData) => ({
+            ...hotel,
+            rooms: allRooms.filter((room: RoomType) => room.hotel._id === hotel._id),
+          }));
+
+          setHotels(hotelsWithRooms);
+        } else {
+          toast.error("Failed to fetch hotels or rooms");
+        }
+      } catch (error) {
+        const errMessage = error instanceof Error ? error.message : "An unknown error occurred";
+        toast.error(errMessage);
+      }
+    };
+
     fetchData();
   }, []);
+
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-10 mx-4 md:mx-16 lg:mx-32 mt-20 md:mt-30 md:pb-30">
