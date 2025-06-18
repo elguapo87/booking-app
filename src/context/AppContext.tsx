@@ -7,6 +7,7 @@ import { UserResource, GetToken } from "@clerk/types";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { RoomType } from "@/types";
+import { useCallback } from "react";
 
 interface AppContextType {
     currency: string;
@@ -30,7 +31,7 @@ export const AppContext = createContext<AppContextType | undefined>(undefined);
 const AppContextProvider = ({ children }: { children: React.ReactNode }) => {
 
     const currency = process.env.CURRENCY || "€";
-    const router = useRouter();     
+    const router = useRouter();
     const { user } = useUser();
     const { getToken } = useAuth();
 
@@ -39,7 +40,7 @@ const AppContextProvider = ({ children }: { children: React.ReactNode }) => {
     const [searchedCities, setSearchedCities] = useState<string[]>([]);
     const [rooms, setRooms] = useState<RoomType[]>([]);
 
-    const fetchUser = async () => {
+    const fetchUser = useCallback(async () => {
         const token = await getToken();
 
         try {
@@ -50,19 +51,16 @@ const AppContextProvider = ({ children }: { children: React.ReactNode }) => {
             if (data.success) {
                 setIsOwner(data.role === "hotelOwner");
                 setSearchedCities(data.recentSearchedCities);
-
             } else {
-                // Retry fetching user details after 5 seconds
                 setTimeout(() => {
-                    fetchUser();
+                    fetchUser(); // safe due to useCallback
                 }, 5000);
             }
-
         } catch (error) {
             const errMessage = error instanceof Error ? error.message : "An unknown error occurred";
             toast.error(errMessage);
         }
-    };
+    }, [getToken]);
 
     const fetchRooms = async () => {
         try {
@@ -85,7 +83,7 @@ const AppContextProvider = ({ children }: { children: React.ReactNode }) => {
         if (user) {
             fetchUser();
         }
-    }, [user]);
+    }, [user, fetchUser]);
 
     useEffect(() => {
         fetchRooms();
