@@ -163,7 +163,6 @@ const UpdateRoom = () => {
                 <div className="flex-1 max-w-48">
                     <p className="text-gray-800 mt-4">Room Type</p>
                     <select onChange={(e) => setInputs({ ...inputs, roomType: e.target.value })} value={inputs.roomType} className="border border-gray-300 opacity-70 mt-1 rounded p-2 w-full">
-                        <option value="any">any</option>
                         <option value="Single Bed">Single Bed</option>
                         <option value="Double Bed">Double Bed</option>
                         <option value="Luxury Room">Luxury Room</option>
