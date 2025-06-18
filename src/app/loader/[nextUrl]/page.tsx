@@ -18,7 +18,7 @@ const Loader = () => {
                 router.push(`/${nextUrl}`);
             }, 8000)
         }
-    }, [nextUrl]);
+    }, [nextUrl, router]);
 
     return (
         <div className='flex justify-center items-center h-screen'>
