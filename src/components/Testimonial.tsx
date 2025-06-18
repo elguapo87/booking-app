@@ -9,7 +9,7 @@ const Testimonial = () => {
         <div className="flex flex-col items-center px-6 md:px-16 lg:px-24 bg-slate-50 pt-20 md:pb-40">
             <Title
                 title="What Our Guests Say"
-                subTitle="Discover why discerning travelers consistently choose QuickStay for their exclusive and
+                subTitle="Discover why discerning travelers consistently choose Easy Booking for their exclusive and
                           luxurious accommodations around the world."
             />
 
