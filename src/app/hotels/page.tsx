@@ -58,7 +58,7 @@ const HotelsPage = () => {
     };
 
     fetchData();
-  }, []);
+  }, [axios]);
 
 
   return (
