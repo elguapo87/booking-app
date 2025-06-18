@@ -104,7 +104,7 @@ export const exclusiveOffers = [
 export const testimonials = [
   {
     id: 1,
-    name: "Emma Rodriguez",
+    name: "Joel Alvarez",
     address: "Barcelona, Spain",
     image: "https://images.unsplash.com/photo-1633332755192-727a05c4013d?q=80&w=200",
     rating: 5,
