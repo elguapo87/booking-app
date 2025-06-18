@@ -20,8 +20,6 @@ const UpdateRoom = () => {
 
     const [loading, setLoading] = useState(false);
 
-    let updatedRooms = null
-
     const [images, setImages] = useState<{ [key: string]: File | null }>({
         "1": null,
         "2": null,
@@ -56,7 +54,7 @@ const UpdateRoom = () => {
         e.preventDefault();
 
         setLoading(true)
-        
+
         try {
             const token = await getToken();
 
@@ -93,7 +91,7 @@ const UpdateRoom = () => {
             } else {
                 toast.error(data.message);
             }
-            
+
         } catch (error) {
             const errMessage = error instanceof Error ? error.message : "An unknown error occurred";
             toast.error(errMessage);
@@ -106,8 +104,6 @@ const UpdateRoom = () => {
     useEffect(() => {
         const foundRoom = rooms.find((room) => room._id === id);
         if (foundRoom) {
-            updatedRooms = foundRoom;
-
             setInputs({
                 roomType: foundRoom.roomType,
                 pricePerNight: foundRoom.pricePerNight,
@@ -116,9 +112,9 @@ const UpdateRoom = () => {
                     "Free Breakfast": foundRoom.amenities.includes("Free Breakfast"),
                     "Room Service": foundRoom.amenities.includes("Room Service"),
                     "Mountain View": foundRoom.amenities.includes("Mountain View"),
-                    "Pool Access": foundRoom.amenities.includes("Pool Access")
-                }
-            })
+                    "Pool Access": foundRoom.amenities.includes("Pool Access"),
+                },
+            });
 
             if (foundRoom.images) {
                 const previews: { [key: string]: string } = {};
@@ -129,6 +125,7 @@ const UpdateRoom = () => {
             }
         }
     }, [id, rooms]);
+
 
     return (
         <form onSubmit={onSubmitHandler}>
@@ -184,7 +181,7 @@ const UpdateRoom = () => {
             <div className="flex flex-col flex-wrap mt-1 text-gray-600 max-w-sm">
                 {Object.keys(inputs.amenities).map((amenity, index) => (
                     <div key={index}>
-                        <input onChange={(e) => setInputs({ ...inputs, amenities: { ...inputs.amenities, [amenity as AmenityKey]: !inputs.amenities[amenity as AmenityKey] } })} type="checkbox" id={`amenities ${index + 1}`} checked={inputs.amenities[amenity as AmenityKey]} />
+                        <input onChange={() => setInputs({ ...inputs, amenities: { ...inputs.amenities, [amenity as AmenityKey]: !inputs.amenities[amenity as AmenityKey] } })} type="checkbox" id={`amenities ${index + 1}`} checked={inputs.amenities[amenity as AmenityKey]} />
                         <label htmlFor={`amenities ${index + 1}`}> {amenity}</label>
                     </div>
                 ))}
