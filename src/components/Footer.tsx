@@ -8,7 +8,7 @@ const Footer = () => {
                 <div className='max-w-80'>
                     <Image src={assets.easy_logo} alt="Logo" className='mb-4 h-7 w-50 invert opacity-80' />
                     <p className='text-sm'>
-                        Discover the world's most extraordinary places to stay, from butique hotels to luxury villas and private islands.
+                        Discover the most extraordinary places in Serbia and region to stay, from butique hotels to luxury villas and private islands.
                     </p>
                     <div className='flex items-center gap-3 mt-4'>
                         <Image src={assets.instagramIcon} alt="Instagram-Icon" className="w-6" />
