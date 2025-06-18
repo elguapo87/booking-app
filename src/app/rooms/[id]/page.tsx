@@ -27,6 +27,8 @@ const RoomDetails = () => {
     const [guests, setGuests] = useState(1);
     const [isAvaliable, setIsAvailable] = useState(false);
 
+    const [loading, setLoading] = useState(false);
+
     const [showNumber, setShowNumber] = useState(false);
 
     const checkAvailability = async () => {
@@ -63,6 +65,8 @@ const RoomDetails = () => {
     const onSubmitHandler = async (e: { preventDefault: () => void; }) => {
         e.preventDefault();
 
+        setLoading(true);
+
         const token = await getToken();
 
         if (!user) {
@@ -93,6 +97,9 @@ const RoomDetails = () => {
         } catch (error) {
             const errMessage = error instanceof Error ? error.message : "An unknown error occurred";
             toast.error(errMessage);
+
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -186,8 +193,11 @@ const RoomDetails = () => {
                     </div>
                 </div>
 
-                <button type='submit' className='bg-primary hover:bg-primary/80 active:scale-95 transition-all text-white rounded-md max-md:w-full max-md:mt-6 md:px-25 py-3 md:py-4 text-base cursor-pointer'>
-                    {isAvaliable ? "Book Now" : "Check Availability"}
+                <button type='submit' className='bg-primary hover:bg-primary/80 active:scale-95 transition-all text-white rounded-md max-md:w-full max-md:mt-6 md:px-25 py-3 md:py-4 text-base cursor-pointer' disabled={loading}>
+                    {loading
+                        ? (isAvaliable ? "Booking..." : "Checking...")
+                        : (isAvaliable ? "Book Now" : "Check Availability")
+                    }
                 </button>
             </form>
 
