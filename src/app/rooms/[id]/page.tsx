@@ -84,7 +84,7 @@ const RoomDetails = () => {
                     toast.success(data.message);
                     router.push("/myBookings");
                     scrollTo(0, 0);
-                     
+
                 } else {
                     toast.error(data.message);
                 }
@@ -97,13 +97,13 @@ const RoomDetails = () => {
     };
 
     useEffect(() => {
-        const room = rooms.find((room) => room._id === id);
-        room && setRoom(room);
-        room && setMainImage(room.images[0]);
-    }, [rooms]);
+        const foundRoom = rooms.find((room) => room._id === id);
+        if (foundRoom) {
+            setRoom(foundRoom);
+            setMainImage(foundRoom.images[0]);
+        }
+    }, [rooms, id]);
 
-    console.log(room?.hotel.contact);
-    
 
     return room && (
         <div className='py-28 md:py-35 px-4 md:px-16 lg:px-24 xl:px-32'>
@@ -182,7 +182,7 @@ const RoomDetails = () => {
 
                     <div className='flex flex-col'>
                         <label htmlFor="guests" className='font-medium'>Guests</label>
-                        <input type="number" id='guests' placeholder='1' className='max-w-20 rounded border border-gray-300 px-3 py-2 mt-1.5 outline-none' required />
+                        <input onChange={(e) => setGuests(Number(e.target.value))} type="number" id='guests' placeholder='1' className='max-w-20 rounded border border-gray-300 px-3 py-2 mt-1.5 outline-none' required />
                     </div>
                 </div>
 
@@ -228,12 +228,12 @@ const RoomDetails = () => {
                         </div>
                     </div>
                 </div>
-                
-        
+
+
                 <button onClick={() => setShowNumber((prev) => !prev)} className='px-6 py-2.5 mt-4 rounded text-white bg-primary hover:bg-primary/80 transition-all cursor-pointer'>Click for number</button>
-                
-                {showNumber && 
-                    <div className="flex items end gap-1"> 
+
+                {showNumber &&
+                    <div className="flex items end gap-1">
                         <Image src={assets.phone_icon} alt="Phone-Icon" className="w-6 h-6" />
                         {room.hotel.contact}
                     </div>
