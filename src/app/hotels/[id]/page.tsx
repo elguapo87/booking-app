@@ -20,7 +20,7 @@ const CheckBox = ({ label, selected = false, onChange = () => { } }: CheckBoxPro
 const RadioButton = ({ label, selected = false, onChange = () => { } }: RadioBtnProps) => {
     return (
         <label className='flex gap-3 items-center cursor-pointer mt-2 text-sm'>
-            <input type='radio' name='sortOption' checked={selected} onChange={(e) => onChange(label)} />
+            <input type='radio' name='sortOption' checked={selected} onChange={() => onChange(label)} />
             <span className="font-light select-none">{label}</span>
         </label>
     )
@@ -44,7 +44,7 @@ const HotelDetailsPage = () => {
 
     const context = useContext(AppContext);
     if (!context) throw new Error("HotelDetailsPage must be within AppContextProvider");
-    const { router, currency, rooms } = context;
+    const { router, currency } = context;
 
     const searchParams = useSearchParams();
     const [hotel, setHotel] = useState<HotelType | null>(null);
@@ -102,7 +102,7 @@ const HotelDetailsPage = () => {
             });
         };
 
-        let newFilteredRooms = hotel?.rooms.filter(
+        const newFilteredRooms = hotel?.rooms.filter(
             (room) => matchesRoomTypes(room) && matchesPriceRange(room)
         );
 
