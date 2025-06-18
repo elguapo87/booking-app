@@ -66,12 +66,12 @@ const HotelDetailsPage = () => {
     ];
 
     const priceRange = [
-        "0 to 500",
-        "500 to 1000",
-        "1000 to 2000",
-        "2000 to 3000"
+        "0 to 100",
+        "100 to 300",
+        "300 to 500",
+        "500 to 1000"
     ];
-
+    
     const sortOptions = [
         "Price Low to High",
         "Price High to Low",
