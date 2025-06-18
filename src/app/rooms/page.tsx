@@ -20,7 +20,7 @@ const CheckBox = ({ label, selected = false, onChange = () => {} }: CheckBoxProp
 const RadioButton = ({ label, selected = false, onChange = () => {} }: RadioBtnProps) => {
     return (
         <label className='flex gap-3 items-center cursor-pointer mt-2 text-sm'>
-            <input type='radio' name='sortOption' checked={selected} onChange={(e) => onChange(label)} />   
+            <input type='radio' name='sortOption' checked={selected} onChange={() => onChange(label)} />   
             <span className="font-light select-none">{label}</span>
         </label>
     )
@@ -97,7 +97,7 @@ const AllRooms = () => {
             return hotelName === "" || room.hotel.name.toLowerCase().includes(hotelName);
         };
 
-        let newFilteredRooms = rooms.filter(
+        const newFilteredRooms = rooms.filter(
             (room) => matchesRoomTypes(room) &&  matchesPriceRange(room) && matchesDestination(room) && matchesHotelName(room)
         );
 
@@ -113,7 +113,7 @@ const AllRooms = () => {
 
         setFilteredRooms(newFilteredRooms);
 
-    }, [rooms, roomTypeFilter, priceRangeFilter, sortByFilter]);
+    }, [rooms, roomTypeFilter, priceRangeFilter, sortByFilter, destination, hotelName]);
 
     const clearFilters = () => {
         setRoomTypeFilter([]);
