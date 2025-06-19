@@ -13,7 +13,7 @@ export async function POST(req: NextRequest) {
 
     // ✅ Parse JSON body
     const body = await req.json();
-    const { roomId, roomType, pricePerNight, amenities, images } = body;
+    const { roomId, roomType, pricePerNight, description, amenities, images } = body;
 
     // ✅ Validate input
     if (!roomId || !roomType || !pricePerNight || !Array.isArray(amenities) || !Array.isArray(images)) {
@@ -37,6 +37,7 @@ export async function POST(req: NextRequest) {
     await roomModel.findByIdAndUpdate(roomId, {
       roomType,
       pricePerNight,
+      description,
       amenities,
       images,
     });

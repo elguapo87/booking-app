@@ -14,6 +14,9 @@ const roomSchema = new mongoose.Schema({
         type: Number,
         required: true
     },
+    description: {
+        type: String
+    },
     amenities: {
         type: Array,
         required: true

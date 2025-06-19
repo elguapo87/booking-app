@@ -8,7 +8,7 @@ export async function POST(req: NextRequest) {
     // ✅ Get JSON payload
     const body = await req.json();
 
-    const { roomType, pricePerNight, amenities, images } = body;
+    const { roomType, pricePerNight, description, amenities, images } = body;
 
     // ✅ Basic validation
     if (!roomType || !pricePerNight || !Array.isArray(amenities) || !Array.isArray(images)) {
@@ -36,6 +36,7 @@ export async function POST(req: NextRequest) {
       hotel: hotel._id,
       roomType,
       pricePerNight,
+      description,
       amenities,
       images,
     });

@@ -27,10 +27,12 @@ const AddRoom = () => {
   const [inputs, setInputs] = useState<{
     roomType: string;
     pricePerNight: number;
+    description: string;
     amenities: Record<AmenityKey, boolean>
   }>({
     roomType: "",
     pricePerNight: 0,
+    description: "",
     amenities: {
       "Free WiFi": false,
       "Free Breakfast": false,
@@ -101,6 +103,7 @@ const AddRoom = () => {
       const { data } = await axios.post("/api/hotel/addRoom", {
         roomType: inputs.roomType,
         pricePerNight: inputs.pricePerNight,
+        description: inputs.description,
         amenities,
         images: imageUrls
       }, {
@@ -115,6 +118,7 @@ const AddRoom = () => {
         setInputs({
           roomType: "",
           pricePerNight: 0,
+          description: "",
           amenities: {
             "Free WiFi": false,
             "Free Breakfast": false,
@@ -197,6 +201,8 @@ const AddRoom = () => {
           <input onChange={(e) => setInputs({ ...inputs, pricePerNight: Number(e.target.value) })} value={inputs.pricePerNight} type="number" placeholder="0" className="border border-gray-300 mt-1 rounded p-2 w-24" />
         </div>
       </div>
+
+      <textarea onChange={(e) => setInputs({ ...inputs,  description: e.target.value})} value={inputs.description} placeholder="Room description" rows={3} className="my-5 px-3 py-2 border border-gray-300 opacity-70 rounded"></textarea>
 
       <p className="text-gray-800 mt-4">Amenities</p>
       <div className="flex flex-col flex-wrap mt-1 text-gray-600 max-w-sm">

@@ -37,10 +37,12 @@ const UpdateRoom = () => {
   const [inputs, setInputs] = useState<{
     roomType: string;
     pricePerNight: number;
+    description: string;
     amenities: Record<AmenityKey, boolean>
   }>({
     roomType: "",
     pricePerNight: 0,
+    description: "",
     amenities: {
       "Free WiFi": false,
       "Free Breakfast": false,
@@ -97,6 +99,7 @@ const UpdateRoom = () => {
       roomId: id,
       roomType: inputs.roomType,
       pricePerNight: inputs.pricePerNight,
+      description: inputs.description,
       amenities,
       images: filledImageURLs,
     };
@@ -128,6 +131,7 @@ const UpdateRoom = () => {
       setInputs({
         roomType: foundRoom.roomType,
         pricePerNight: foundRoom.pricePerNight,
+        description: foundRoom.description || "",
         amenities: {
           "Free WiFi": foundRoom.amenities.includes("Free WiFi"),
           "Free Breakfast": foundRoom.amenities.includes("Free Breakfast"),
@@ -208,6 +212,8 @@ const UpdateRoom = () => {
           />
         </div>
       </div>
+
+      <textarea onChange={(e) => setInputs({ ...inputs,  description: e.target.value})} value={inputs.description} placeholder="Room description" rows={3} className="my-5 px-3 py-2 border border-gray-300 opacity-70 rounded"></textarea>
 
       <p className="text-gray-800 mt-4">Amenities</p>
       <div className="flex flex-col flex-wrap mt-1 text-gray-600 max-w-sm">

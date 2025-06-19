@@ -30,6 +30,7 @@ export type RoomType = {
     hotel: HotelType;
     roomType: string;
     pricePerNight: number;
+    description: string;
     amenities: string[];
     images: (string | StaticImageData)[];
     isAvailable: boolean;
