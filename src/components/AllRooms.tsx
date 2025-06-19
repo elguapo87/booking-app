@@ -7,6 +7,7 @@ import StarRating from '@/components/StarRating';
 import { CheckBoxProps, RadioBtnProps, RoomType  } from '@/types';
 import { AppContext } from '@/context/AppContext';
 import { assets, facilityIcons } from '../../public/assets';
+import Loader from './Loader';
 
 const CheckBox = ({ label, selected = false, onChange = () => {} }: CheckBoxProps) => {
     return (
@@ -44,6 +45,10 @@ const AllRooms = () => {
     const [sortByFilter, setSortByFilter] = useState<string>("");
 
     const [filteredRooms, setFilteredRooms] = useState(rooms);
+
+    if (!rooms || rooms.length === 0) {
+        return <Loader />;
+    }
 
     const roomTypes = [
         "Single Bed",
