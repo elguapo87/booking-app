@@ -1,9 +1,10 @@
 import { Suspense } from "react";
 import HotelDetails from "./HotelDetails";
+import Loader from "./Loader";
 
 export default function HotelDetailsWrapper() {
     return (
-        <Suspense fallback={<div>Loading rooms...</div>}>
+        <Suspense fallback={<Loader />}>
             <HotelDetails />
         </Suspense>
     )
