@@ -3,7 +3,6 @@ import { AppContext } from "@/context/AppContext";
 import { RoomType } from "@/types";
 import Image from "next/image";
 import { useContext, useState } from "react";
-import Loader from "./Loader";
 
 type OwnerType = {
   username: string;
@@ -37,10 +36,6 @@ const AllHotels = ({ hotel }: { hotel: AllHotelsData }) => {
     const y = (e.clientY - top) / height - 0.5;
     setTilt({ x: y * -threshold, y: x * threshold });
   };
-
-  if (!hotel) {
-    return <Loader />
-  }
 
   return (
     <div

@@ -7,7 +7,6 @@ import StarRating from '@/components/StarRating';
 import { CheckBoxProps, RadioBtnProps, RoomType  } from '@/types';
 import { AppContext } from '@/context/AppContext';
 import { assets, facilityIcons } from '../../public/assets';
-import Loader from './Loader';
 
 const CheckBox = ({ label, selected = false, onChange = () => {} }: CheckBoxProps) => {
     return (
@@ -37,7 +36,6 @@ const AllRooms = () => {
     if (!context) throw new Error("RoomListPage must be within AppContextProvider");
     const { router, rooms, currency } = context;
 
-
     const [openFilters, setOpenFilters] = useState(false);
 
     const [roomTypeFilter, setRoomTypeFilter] = useState<string[]>([]);
@@ -45,10 +43,6 @@ const AllRooms = () => {
     const [sortByFilter, setSortByFilter] = useState<string>("");
 
     const [filteredRooms, setFilteredRooms] = useState(rooms);
-
-    if (!rooms || rooms.length === 0) {
-        return <Loader />;
-    }
 
     const roomTypes = [
         "Single Bed",

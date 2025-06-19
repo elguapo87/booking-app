@@ -1,6 +1,7 @@
 "use client";
 
 import AllHotels from "@/components/AllHotels";
+import Loader from "@/components/Loader";
 import { AppContext } from "@/context/AppContext";
 import { RoomType } from "@/types";
 import { useContext, useEffect, useState } from "react";
@@ -30,8 +31,12 @@ const HotelsPage = () => {
 
   const [hotels, setHotels] = useState<AllHotelsData[] | null>(null);
 
+  const [loadingHotels, setLoadingHotels] = useState(false);
+
   useEffect(() => {
     const fetchData = async () => {
+      setLoadingHotels(true);
+
       try {
         const [hotelRes, roomRes] = await Promise.all([
           axios.get("/api/hotel/getAllHotels"),
@@ -54,12 +59,18 @@ const HotelsPage = () => {
       } catch (error) {
         const errMessage = error instanceof Error ? error.message : "An unknown error occurred";
         toast.error(errMessage);
+
+      } finally {
+        setLoadingHotels(false);
       }
     };
 
     fetchData();
   }, [axios]);
 
+  if (loadingHotels) {
+    return <Loader />;
+  }
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-10 mx-4 md:mx-16 lg:mx-32 mt-20 md:mt-30 md:pb-30">

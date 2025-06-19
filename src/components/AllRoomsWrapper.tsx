@@ -2,11 +2,10 @@
 
 import { Suspense } from "react";
 import AllRooms from "./AllRooms";
-import Loader from "./Loader";
 
 export default function AllRoomsWrapper() {
     return (
-        <Suspense fallback={<Loader />}>
+        <Suspense fallback={<div>Loading rooms...</div>}>
             <AllRooms />
         </Suspense>
     )
