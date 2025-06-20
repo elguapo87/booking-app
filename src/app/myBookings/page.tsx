@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useCallback, useContext, useEffect, useState } from 'react'
 import { assets } from '../../../public/assets';
 import Title from '@/components/Title';
 import Image from 'next/image';
@@ -37,32 +37,52 @@ const MyBookings = () => {
         }
     };
 
+    const fetchUserBookings = useCallback(async () => {
+        const token = await getToken();
+
+        try {
+            const { data } = await axios.get("/api/booking/getUserBookings", {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+
+            if (data.success) {
+                setBookings(data.bookings);
+            } else {
+                toast.error(data.message);
+            }
+        } catch (error) {
+            const errMessage = error instanceof Error ? error.message : "An unknown error occurred";
+            toast.error(errMessage);
+        }
+    }, [getToken, axios]);
+
+    const cancelBooking = async (bookingId: string) => {
+        try {
+            const token = await getToken();
+
+            const { data } = await axios.post("/api/booking/cancelBooking", { bookingId }, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+
+            if (data.success) {
+                toast.success(data.message);
+                fetchUserBookings();
+
+            } else {
+                toast.error(data.message);
+            }
+
+        } catch (error) {
+            const errMessage = error instanceof Error ? error.message : "An unknown error occurred";
+            toast.error(errMessage);
+        }
+    };
+
     useEffect(() => {
         if (user) {
-            const fetchUserBookings = async () => {
-                const token = await getToken();
-
-                try {
-                    const { data } = await axios.get("/api/booking/getUserBookings", {
-                        headers: { Authorization: `Bearer ${token}` }
-                    });
-
-                    if (data.success) {
-                        setBookings(data.bookings);
-                    } else {
-                        toast.error(data.message);
-                    }
-                } catch (error) {
-                    const errMessage = error instanceof Error ? error.message : "An unknown error occurred";
-                    toast.error(errMessage);
-                }
-            };
-
             fetchUserBookings();
         }
-    }, [user, getToken, axios]);
-
-
+    }, [user, fetchUserBookings]);
 
     return (
         <div className='py-28 md:pb-35 md:pt-32 px-4 md:px-16 lg:px-24 xl:px-32'>
@@ -123,7 +143,10 @@ const MyBookings = () => {
                             </div>
 
                             {!booking.isPaid && (
-                                <button onClick={() => handlePayment(booking._id)} className='px-4 py-1.5 mt-4 text-xs border border-gray-400 rounded-full hover:bg-gray-50 transition-all cursor-pointer'>Pay Now</button>
+                                <div className='flex items-center gap-2'>
+                                    <button onClick={() => handlePayment(booking._id)} className='px-4 py-1.5 mt-4 text-xs border border-gray-400 rounded-full hover:bg-gray-50 transition-all cursor-pointer'>Pay Now</button>
+                                    <button onClick={() => cancelBooking(booking._id)} className='px-4 py-1.5 mt-4 text-xs border border-red-300 rounded-full text-red-500 hover:bg-red-50 transition-all cursor-pointer'>Cancel</button>
+                                </div>
                             )}
                         </div>
                     </div>
