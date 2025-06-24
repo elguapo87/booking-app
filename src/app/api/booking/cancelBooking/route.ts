@@ -1,7 +1,9 @@
-import transporter from "@/config/nodemailer";
 import { protectUser } from "@/middleware/userAuth";
 import bookingModel from "@/models/bookingModel";
+import roomModel from "@/models/roomModel";
 import { NextRequest, NextResponse } from "next/server";
+import "@/models/hotelModel";
+import transporter from "@/config/nodemailer";
 
 export async function POST(req: NextRequest) {
     try {
@@ -12,13 +14,18 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
         }
 
-        const booking = await bookingModel.findById(bookingId);
+        const booking = await bookingModel.findById(bookingId).populate({
+            path: "room",
+            populate: {
+                path: "hotel",
+            },
+        });
 
         if (!booking) {
-            return NextResponse.json({ success: false, message: "Booking not found" }, { status: 401 });
+            return NextResponse.json({ success: false, message: "Booking not found" }, { status: 404 });
         }
 
-         // Send cancellation email before deleting
+        // Send cancellation email before deleting
         const mailOptions = {
             from: process.env.SENDER_EMAIL,
             to: user.email,
@@ -40,12 +47,13 @@ export async function POST(req: NextRequest) {
 
         await transporter.sendMail(mailOptions);
 
-        await bookingModel.findByIdAndDelete(booking);
+        // Now delete the booking
+        await bookingModel.findByIdAndDelete(bookingId);
 
-        return NextResponse.json({ success: true, message: "Booking cancelled" });
+        return NextResponse.json({ success: true, message: "Booking cancelled and email sent" });
 
     } catch (error) {   
-        const errMessage = error instanceof Error ? error.message : "An unkwnow error occurred";
-        return NextResponse.json({ success: false, message: errMessage });
+        const errMessage = error instanceof Error ? error.message : "An unknown error occurred";
+        return NextResponse.json({ success: false, message: errMessage }, { status: 500 });
     }
 };
