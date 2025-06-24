@@ -65,7 +65,9 @@ const RoomDetails = () => {
     const onSubmitHandler = async (e: { preventDefault: () => void; }) => {
         e.preventDefault();
 
-        setLoading(true);
+        if (user) {
+            setLoading(true);
+        }
 
         const token = await getToken();
 
